@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.b07project2024.group1.addItems.AddItemFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.List;
@@ -24,12 +25,12 @@ public class ContextTopMenuFragment extends Fragment {
     private AuthFacade authFacade;
     private CatalogSelectionViewModel selectionViewModel;
     private CatalogViewModel catalogViewModel;
+    private Integer lastNavID;
     private boolean isSearched;
     private boolean isSelected;
     private boolean isAuthed;
 
     private DeleteItem delete;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -63,7 +64,7 @@ public class ContextTopMenuFragment extends Fragment {
 
     /**
      * Sets the Navigation icon to a back arrow or nothing based off stack count
-     * 
+     *
      * @param appBar navigation icon
      */
     private void setNavigationIcon(MaterialToolbar appBar) {
@@ -71,12 +72,13 @@ public class ContextTopMenuFragment extends Fragment {
             appBar.setNavigationIcon(null);
         } else {
             appBar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
+            lastNavID = R.drawable.ic_arrow_back_24dp;
         }
     }
 
     /**
      * Clears selection if something is selected or goes back in the stack if exists
-     * 
+     *
      * @param appBar the navigation icon
      */
     private void onNavigationClick(MaterialToolbar appBar) {
@@ -90,7 +92,7 @@ public class ContextTopMenuFragment extends Fragment {
 
     /**
      * Navigates users to the correct fragment based of the view clicked
-     * 
+     *
      * @param item the item clicked by the user
      * @return true if successfully found the item
      */
@@ -109,8 +111,8 @@ public class ContextTopMenuFragment extends Fragment {
                 transaction.replace(R.id.fragment_container, new LoginFragment());
                 transaction.addToBackStack("Login");
             }
-        } else if (item.getItemId() == R.id.add) {
-            transaction.replace(R.id.fragment_container, new CatalogFragment());
+        } else if (item.getItemId() == R.id.add){
+            transaction.replace(R.id.fragment_container, new AddItemFragment());
             transaction.addToBackStack("Add");
         } else if (item.getItemId() == R.id.report) {
             transaction.replace(R.id.fragment_container, new CatalogFragment());
@@ -169,7 +171,7 @@ public class ContextTopMenuFragment extends Fragment {
     /**
      * Changes the navigation icon of selected based off whether an item has been
      * selected or not
-     * 
+     *
      * @param appBar selected icon
      * @param items  items selected
      */
@@ -188,7 +190,7 @@ public class ContextTopMenuFragment extends Fragment {
     /**
      * Changes the navigation icon of search based off whether an item has been
      * searched
-     * 
+     *
      * @param search   icon
      * @param searched true if searched false if not
      */
@@ -207,7 +209,7 @@ public class ContextTopMenuFragment extends Fragment {
     /**
      * Sets the visibility of the navigation icons based off whether isVisible is
      * true
-     * 
+     *
      * @param user      user's login/logout icon
      * @param add       add catalog item icon
      * @param report    generate report icon
