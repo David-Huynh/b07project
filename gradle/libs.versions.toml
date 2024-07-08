@@ -1,0 +1,46 @@
+[versions]
+agp = "8.5.0"
+coreTesting = "2.2.0"
+fragment = "1.8.1"
+hiltAndroidTestingVersion = "2.51.1"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.6.1"
+lifecycleLivedata = "2.8.3"
+material = "1.10.0"
+activity = "1.8.0"
+constraintlayout = "2.1.4"
+googleGmsGoogleServices = "4.4.2"
+firebaseDatabase = "21.0.0"
+recyclerviewVersion = "-selection"
+
+[libraries]
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8" }
+androidx-lifecycle-reactivestreams = { module = "androidx.lifecycle:lifecycle-reactivestreams", version.ref = "lifecycleLivedata" }
+androidx-lifecycle-runtime-testing = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "lifecycleLivedata" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerviewVersion" }
+androidx-recyclerview-selection = { module = "androidx.recyclerview:recyclerview-selection" }
+com-google-dagger-hilt-compiler2 = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroidTestingVersion" }
+dagger-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTestingVersion" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidTestingVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "lifecycleLivedata" }
+lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycleLivedata" }
+lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "lifecycleLivedata" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleLivedata" }
+lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycleLivedata" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+
