@@ -2,20 +2,25 @@
 agp = "8.5.0"
 coreTesting = "2.2.0"
 fragment = "1.8.1"
+glide = "4.16.0"
+gradleBaselineJava = "4.33.0"
 hiltAndroidTestingVersion = "2.51.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-appcompat = "1.6.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
 lifecycleLivedata = "2.8.3"
-material = "1.10.0"
-activity = "1.8.0"
+material = "1.12.0"
+activity = "1.9.0"
 constraintlayout = "2.1.4"
 googleGmsGoogleServices = "4.4.2"
 firebaseDatabase = "21.0.0"
+recyclerviewSelection = "1.1.0"
 recyclerviewVersion = "-selection"
+robolectric = "4.13"
 
 [libraries]
+androidx-core = { module = "androidx.test:core" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8" }
@@ -25,6 +30,8 @@ androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version
 androidx-recyclerview-selection = { module = "androidx.recyclerview:recyclerview-selection" }
 com-google-dagger-hilt-compiler2 = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroidTestingVersion" }
 dagger-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTestingVersion" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+gradle-baseline-java = { module = "gradle.plugin.com.palantir.baseline:gradle-baseline-java", version.ref = "gradleBaselineJava" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidTestingVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -39,6 +46,11 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+mockito-core = { module = "org.mockito:mockito-core" }
+picasso = { module = "com.squareup.picasso:picasso" }
+recyclerview-selection = { module = "androidx.recyclerview:recyclerview-selection", version.ref = "recyclerviewSelection" }
+robolectric = { module = "org.robolectric:robolectric" }
+robolectric-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
