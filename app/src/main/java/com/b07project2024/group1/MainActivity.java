@@ -16,12 +16,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadFragment(new CatalogFragment());
+        loadFragment(new CatalogFragment(), R.id.fragment_container);
     }
 
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, int id) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(id, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
