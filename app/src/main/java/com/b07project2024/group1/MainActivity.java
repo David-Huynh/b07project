@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance("https://b07project-group1-default-rtdb.firebaseio.com/");
+        db = FirebaseDatabase.getInstance("https://scrum-7-default-rtdb.firebaseio.com/");
         DatabaseReference myRef = db.getReference("testDemo");
 
-//        myRef.setValue("B07 Demo!");
+        myRef.setValue("B07 Demo!");
         myRef.child("movies").setValue("B07 Demo!");
 
         if (savedInstanceState == null) {

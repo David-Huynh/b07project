@@ -49,6 +49,7 @@ dependencies {
     implementation (libs.androidx.fragment)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -81,5 +82,12 @@ dependencies {
     // For local unit tests
     testImplementation(libs.dagger.hilt.android.testing)
     testAnnotationProcessor(libs.com.google.dagger.hilt.compiler2)
+
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    // Firebase Storage dependency
+    implementation ("com.google.firebase:firebase-storage:20.0.1")
+    implementation ("com.google.firebase:firebase-database:20.0.3")
 }
 
