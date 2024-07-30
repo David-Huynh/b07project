@@ -1,6 +1,5 @@
-package com.b07project2024.group1;
+package com.b07project2024.group1.addItems;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
@@ -23,7 +22,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.b07project2024.group1.CatalogItem;
+import com.b07project2024.group1.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -89,16 +91,20 @@ public class AddItemFragment extends Fragment {
         periodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPeriod.setAdapter(periodAdapter);
 
-        // Set up the button to submit the item
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+        /*buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                addItem();
-            }
+            public void onClick(View v) { submitCatalogItem(); }
+        });*/
+
+        buttonUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { loadFragment(new PhotosPickerFragment()); }
         });
 
-        buttonUploadImage.setOnClickListener(v -> openImagePicker());
-        buttonUploadVideo.setOnClickListener(v -> openVideoPicker());
+        buttonUploadVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { loadFragment(new VideosPickerFragment()); }
+        });
 
         return view;
     }
@@ -246,5 +252,12 @@ public class AddItemFragment extends Fragment {
                     Log.e(TAG, "Upload failed: " + e.getMessage());
                     Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

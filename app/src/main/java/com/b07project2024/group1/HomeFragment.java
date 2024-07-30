@@ -10,6 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.b07project2024.group1.addItems.AddItemFragment;
+import com.b07project2024.group1.addItems.PhotosPickerFragment;
+import com.b07project2024.group1.addItems.VideosPickerFragment;
+
 public class HomeFragment extends Fragment {
     @Nullable
     @Override
@@ -25,8 +29,7 @@ public class HomeFragment extends Fragment {
         buttonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new AddItemFragment());
-            }
+                loadFragment(new AddItemFragment()); }
         });
 
         buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +42,7 @@ public class HomeFragment extends Fragment {
         buttonScroller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new ScrollerFragment());
+                loadFragment(new VideosPickerFragment());
             }
         });
 

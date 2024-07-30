@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.b07project2024.group1.addItems.AddItemFragment;
+
 public class ManageItemsFragment extends Fragment {
     @Nullable
     @Override

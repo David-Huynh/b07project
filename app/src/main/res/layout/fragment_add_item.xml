@@ -139,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
-        android:text="Select Videos"
+        android:text="Upload Videos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonUploadImage"
         app:layout_constraintTop_toBottomOf="@+id/labelDescription" />
@@ -150,7 +150,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="16dp"
-        android:text="Select Images"
+        android:text="Upload Images"
         app:layout_constraintEnd_toStartOf="@+id/buttonUploadVideo"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
