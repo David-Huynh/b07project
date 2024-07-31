@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
@@ -93,7 +94,7 @@ public class ContextTopMenuFragment extends Fragment {
         //TODO: REPLACE R.id.fragment_container with the actual corresponding fragment
         if (itemId == R.id.search) {
             if (!isSearched) {
-                transaction.replace(R.id.fragment_container, new CatalogFragment());
+                transaction.replace(R.id.fragment_container, new SearchCatalogFragment());
                 transaction.addToBackStack("Search");
             }
         } else if (itemId == R.id.user) {
