@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.dagger.hilt.android")
@@ -40,6 +37,7 @@ android {
             println("All tests executed successfully.")
         }
     }
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
@@ -49,10 +47,12 @@ dependencies {
     implementation (libs.androidx.fragment)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.glide)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric.robolectric)
     // ViewModel
     implementation(libs.lifecycle.viewmodel)
     // LiveData
@@ -68,8 +68,7 @@ dependencies {
     testImplementation(libs.androidx.core.testing)
     // Test helpers for Lifecycle runtime
     testImplementation(libs.androidx.lifecycle.runtime.testing)
-
-
+    implementation (libs.recyclerview.selection)
     //HILT
     implementation(libs.hilt.android)
     annotationProcessor (libs.com.google.dagger.hilt.compiler2)
