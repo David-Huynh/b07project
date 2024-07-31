@@ -1,11 +1,8 @@
 package com.b07project2024.group1.addItems;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,234 +24,188 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddItemFragment extends Fragment {
 
-    private static final String TAG = "UploadFragment";
+    private static final String TAG = "AddItemFragment";
 
-    private static final int REQUEST_IMAGE_PICK = 101;
-    private static final int REQUEST_VIDEO_PICK = 102;
-    private static final int MAX_IMAGES = 9;
-    private static final int MAX_VIDEOS = 2;
-
-    private GridLayout gridLayoutSelectedFiles;
-    private List<Uri> selectedFiles = new ArrayList<>();
-    private List<String> uploadedURLs = new ArrayList<>();
-
-    private EditText editTextLotNumber;
-    private EditText editTextName;
-    private EditText editTextDescription;
-    private Spinner spinnerCategory;
-    private Spinner spinnerPeriod;
-    private Button buttonSubmit;
-    private TextView textViewURL;
+    private EditText editTextLotNumber, editTextName, editTextDescription;
+    private Spinner spinnerCategory, spinnerPeriod;
+    private Button buttonSubmit, buttonUploadImage, buttonUploadVideo;
 
     private FirebaseDatabase db;
     private FirebaseStorage storage;
 
-    private String currentItemID; // Store the ID of the current item being added
+    private ArrayList<String> selectedImageUris = new ArrayList<>();
+    private ArrayList<String> selectedVideoUris = new ArrayList<>();
+    private List<String> uploadedURLs = new ArrayList<>();
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        // Set up fragment result listeners
+        getParentFragmentManager().setFragmentResultListener("photoPickerResult", this, (requestKey, result) -> {
+            selectedImageUris = result.getStringArrayList("selectedImages");
+            Log.d(TAG, "Received " + selectedImageUris.size() + " images from PhotoPicker");
+        });
+
+        getParentFragmentManager().setFragmentResultListener("videoPickerResult", this, (requestKey, result) -> {
+            selectedVideoUris = result.getStringArrayList("selectedVideos");
+            Log.d(TAG, "Received " + selectedVideoUris.size() + " videos from VideoPicker");
+        });
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_item, container, false);
 
+        initializeViews(view);
+        setupFirebase();
+        setupSpinners();
+        setupButtons();
+
+        return view;
+    }
+
+    private void initializeViews(View view) {
         editTextLotNumber = view.findViewById(R.id.editTextLotNumber);
         editTextName = view.findViewById(R.id.editTextName);
         editTextDescription = view.findViewById(R.id.editTextDescription);
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
         spinnerPeriod = view.findViewById(R.id.spinnerPeriod);
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
-        Button buttonUploadImage = view.findViewById(R.id.buttonUploadImage);
-        Button buttonUploadVideo = view.findViewById(R.id.buttonUploadVideo);
-        gridLayoutSelectedFiles = view.findViewById(R.id.gridLayoutSelectedFiles);
+        buttonUploadImage = view.findViewById(R.id.buttonUploadImage);
+        buttonUploadVideo = view.findViewById(R.id.buttonUploadVideo);
+    }
 
+    private void setupFirebase() {
         db = FirebaseDatabase.getInstance("https://scrum-7-default-rtdb.firebaseio.com/");
-        storage = FirebaseStorage.getInstance(); // Initialize Firebase Storage
+        storage = FirebaseStorage.getInstance("gs://scrum-7.appspot.com");
+    }
 
-        // Set up the spinner with categories
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+    private void setupSpinners() {
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.categories_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(adapter);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(categoryAdapter);
 
-        // Set up the spinner with periods
         ArrayAdapter<CharSequence> periodAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.periods_array, android.R.layout.simple_spinner_item);
         periodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPeriod.setAdapter(periodAdapter);
-
-        /*buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { submitCatalogItem(); }
-        });*/
-
-        buttonUploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new PhotosPickerFragment()); }
-        });
-
-        buttonUploadVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new VideosPickerFragment()); }
-        });
-
-        return view;
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, REQUEST_IMAGE_PICK);
+    private void setupButtons() {
+        buttonSubmit.setOnClickListener(v -> submitCatalogItem());
+        buttonUploadImage.setOnClickListener(v -> loadFragment(new PhotosPickerFragment(), "PHOTOS_PICKER_FRAGMENT"));
+        buttonUploadVideo.setOnClickListener(v -> loadFragment(new VideosPickerFragment(), "VIDEOS_PICKER_FRAGMENT"));
     }
 
-    private void openVideoPicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, REQUEST_VIDEO_PICK);
+    private void loadFragment(Fragment fragment, String tag) {
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment, tag);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void submitCatalogItem() {
+        if (!validateInput()) return;
 
-        if (resultCode == getActivity().RESULT_OK && data != null) {
-            if (requestCode == REQUEST_IMAGE_PICK) {
-                handleFileSelection(data, "image");
-            } else if (requestCode == REQUEST_VIDEO_PICK) {
-                handleFileSelection(data, "video");
-            }
-        }
+        Log.d(TAG, "Submitting with " + selectedImageUris.size() + " images and " + selectedVideoUris.size() + " videos");
+
+        uploadMediaFiles();
     }
 
-    private void handleFileSelection(Intent data, String fileType) {
-        if (data.getClipData() != null) {
-            int count = data.getClipData().getItemCount();
-            if (("image".equals(fileType) && count + selectedFiles.size() > MAX_IMAGES) ||
-                    ("video".equals(fileType) && count + selectedFiles.size() > MAX_VIDEOS)) {
-                Toast.makeText(getContext(), "Exceeded max file limit", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            for (int i = 0; i < count; i++) {
-                Uri fileUri = data.getClipData().getItemAt(i).getUri();
-                selectedFiles.add(fileUri);
-                addThumbnailToGridLayout(fileUri, fileType);
-            }
-        } else if (data.getData() != null) {
-            Uri fileUri = data.getData();
-            if (("image".equals(fileType) && selectedFiles.size() + 1 > MAX_IMAGES) ||
-                    ("video".equals(fileType) && selectedFiles.size() + 1 > MAX_VIDEOS)) {
-                Toast.makeText(getContext(), "Exceeded max file limit", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            selectedFiles.add(fileUri);
-            addThumbnailToGridLayout(fileUri, fileType);
-        }
-    }
-
-    private void addThumbnailToGridLayout(Uri fileUri, String fileType) {
-        ImageView imageView = new ImageView(getContext());
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        if ("image".equals(fileType)) {
-            imageView.setImageURI(fileUri);
-        } else if ("video".equals(fileType)) {
-            imageView.setImageBitmap(getThumbnailFromVideoUri(fileUri));
-        }
-
-        gridLayoutSelectedFiles.addView(imageView);
-    }
-
-    private Bitmap getThumbnailFromVideoUri(Uri videoUri) {
-        return ThumbnailUtils.createVideoThumbnail(videoUri.getPath(), MediaStore.Images.Thumbnails.MINI_KIND);
-    }
-
-    private void addItem() {
-        String LotNumber = editTextLotNumber.getText().toString().trim();
-        String Name = editTextName.getText().toString().trim();
-        String Category = spinnerCategory.getSelectedItem().toString().toLowerCase();
-        String Period = spinnerPeriod.getSelectedItem().toString().toLowerCase();
-        String description = editTextDescription.getText().toString().trim();
-
-        if (LotNumber.isEmpty() || Name.isEmpty() || Category.isEmpty() || Period.isEmpty() || description.isEmpty()) {
+    private boolean validateInput() {
+        if (editTextLotNumber.getText().toString().trim().isEmpty() ||
+                editTextName.getText().toString().trim().isEmpty() ||
+                editTextDescription.getText().toString().trim().isEmpty() ||
+                spinnerCategory.getSelectedItemPosition() == 0 ||
+                spinnerPeriod.getSelectedItemPosition() == 0) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void uploadMediaFiles() {
+        uploadedURLs.clear();
+        int totalFiles = selectedImageUris.size() + selectedVideoUris.size();
+        Log.d(TAG, "Total files to upload: " + totalFiles);
+        AtomicInteger uploadedCount = new AtomicInteger(0);
+
+        if (totalFiles == 0) {
+            addItemToDatabase(new ArrayList<>(), new ArrayList<>());
             return;
         }
 
-        uploadFiles(() -> {
-            DatabaseReference categoriesRef = db.getReference("categories/" + Category);
-            DatabaseReference periodsRef = db.getReference("periods/" + Period);
-
-            currentItemID = categoriesRef.push().getKey(); // Generate a unique ID for the item
-
-            if (currentItemID != null) {
-                CatalogItem item = new CatalogItem(LotNumber, Name, Category, description, Period, uploadedURLs);
-
-                // Store item under "categories"
-                categoriesRef.child(currentItemID).setValue(item).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Item added under categories.");
-                    } else {
-                        Log.e(TAG, "Failed to add item under categories: " + task.getException().getMessage());
-                    }
-                });
-
-                // Store item under "periods"
-                periodsRef.child(currentItemID).setValue(item).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Item added under periods.");
-                    } else {
-                        Log.e(TAG, "Failed to add item under periods: " + task.getException().getMessage());
-                    }
-                });
-
-                Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "Failed to generate item ID", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void uploadFiles(Runnable onComplete) {
-        uploadedURLs.clear();
-        for (Uri fileUri : selectedFiles) {
-            uploadFile(fileUri, onComplete);
+        for (String uriString : selectedImageUris) {
+            uploadFile(Uri.parse(uriString), "images/", uploadedCount, totalFiles);
+        }
+        for (String uriString : selectedVideoUris) {
+            uploadFile(Uri.parse(uriString), "videos/", uploadedCount, totalFiles);
         }
     }
 
-    private void uploadFile(Uri fileUri, Runnable onComplete) {
-        StorageReference storageRef = storage.getReference();
+    private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
+        StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
+        UploadTask uploadTask = fileRef.putFile(fileUri);
 
-        String filePath = "uploads/" + UUID.randomUUID().toString();
-        StorageReference fileRef = storageRef.child(filePath);
+        uploadTask.addOnFailureListener(exception -> {
+            Log.e(TAG, "Upload failed: " + exception.getMessage());
+            Toast.makeText(getContext(), "Upload failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+        }).addOnSuccessListener(taskSnapshot -> {
+            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                uploadedURLs.add(uri.toString());
+                if (uploadedCount.incrementAndGet() == totalFiles) {
+                    List<String> imageUrls = uploadedURLs.subList(0, selectedImageUris.size());
+                    List<String> videoUrls = uploadedURLs.subList(selectedImageUris.size(), uploadedURLs.size());
+                    addItemToDatabase(imageUrls, videoUrls);
+                }
+            });
+        });
+    }
 
-        fileRef.putFile(fileUri)
-                .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String url = uri.toString();
-                    uploadedURLs.add(url);
+    private void addItemToDatabase(List<String> imageUrls, List<String> videoUrls) {
+        String lotNumber = editTextLotNumber.getText().toString().trim();
+        String name = editTextName.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String period = spinnerPeriod.getSelectedItem().toString();
+        String description = editTextDescription.getText().toString().trim();
 
-                    // Check if all files are uploaded
-                    if (uploadedURLs.size() == selectedFiles.size()) {
-                        onComplete.run();
-                    }
-                }))
+        DatabaseReference itemsRef = db.getReference("catalog_items");
+
+        CatalogItem item = new CatalogItem(lotNumber, name, category, description, period, imageUrls, videoUrls);
+
+        itemsRef.child(lotNumber).setValue(item)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Item added successfully.");
+                    Toast.makeText(getContext(), "Item added successfully", Toast.LENGTH_SHORT).show();
+                    clearForm();
+                })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Upload failed: " + e.getMessage());
-                    Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Failed to add item: " + e.getMessage());
+                    Toast.makeText(getContext(), "Failed to add item: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
-    private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    private void clearForm() {
+        editTextLotNumber.setText("");
+        editTextName.setText("");
+        editTextDescription.setText("");
+        spinnerCategory.setSelection(0);
+        spinnerPeriod.setSelection(0);
+
+        selectedImageUris.clear();
+        selectedVideoUris.clear();
+        uploadedURLs.clear();
     }
 }

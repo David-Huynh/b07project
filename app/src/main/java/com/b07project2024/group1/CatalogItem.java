@@ -16,16 +16,19 @@ public class CatalogItem {
     private String category;
     private String period;
     private String description;
-    private List<String> URL;
+    private List<String> imageURLs;
+    private List<String> videoURLs;
 
     public CatalogItem() {}
 
-    public CatalogItem(String lot, String name, String category, String period, String description, List<String> URLs) {
+    public CatalogItem(String lot, String name, String category, String period, String description, List<String> imageURLs, List<String> videoURLs) {
         this.lot = lot;
         this.name = name;
         this.category = category;
         this.description = description;
         this.period = period;
+        this.imageURLs = imageURLs;
+        this.videoURLs = videoURLs;
     }
 
 
@@ -60,7 +63,8 @@ public class CatalogItem {
                 && category.equals(other.category)
                 && description.equals(other.description)
                 && period.equals(other.period)
-                && URL.equals(other.URL);
+                && imageURLs.equals(other.imageURLs)
+                && videoURLs.equals(other.videoURLs);
     }
 
     /**
@@ -82,7 +86,7 @@ public class CatalogItem {
      */
     @Override
     public int hashCode(){
-        return Objects.hash(lot, name, category, description, period, URL);
+        return Objects.hash(lot, name, category, description, period, imageURLs, videoURLs);
     }
 
     /**

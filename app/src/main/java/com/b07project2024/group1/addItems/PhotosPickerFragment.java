@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.b07project2024.group1.R;
 import com.google.gson.Gson;
@@ -87,7 +89,7 @@ public class PhotosPickerFragment extends Fragment {
 
     private void openCustomGallery() {
         try {
-            Intent intent = new Intent(requireActivity(), CustomGalleryActivity.class);
+            Intent intent = new Intent(requireActivity(), CustomPhotoGalleryActivity.class);
             intent.putStringArrayListExtra("selectedImages", selectedImageUris);
             startActivityForResult(intent, REQUEST_GALLERY);
         } catch (Exception e) {
@@ -119,10 +121,7 @@ public class PhotosPickerFragment extends Fragment {
     }
 
     private void uploadImages() {
-        // Implement your upload logic here
-        Toast.makeText(requireContext(), "Uploading " + selectedImageUris.size() + " images", Toast.LENGTH_SHORT).show();
-        // After upload is complete, return to previous fragment
-        requireActivity().getSupportFragmentManager().popBackStack();
+        // Navigate back
     }
 
     private void saveSelectedImages() {
@@ -146,5 +145,15 @@ public class PhotosPickerFragment extends Fragment {
         } else {
             selectedImageUris = new ArrayList<>();
         }
+    }
+
+    public ArrayList<String> getSelectedImageUris() {
+        return selectedImageUris;
+    }
+
+    public void clearSelection() {
+        selectedImageUris.clear();
+        updateGridLayout();
+        saveSelectedImages();
     }
 }

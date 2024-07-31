@@ -18,7 +18,7 @@ import com.b07project2024.group1.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomGalleryActivity extends AppCompatActivity {
+public class CustomPhotoGalleryActivity extends AppCompatActivity {
     private static final String TAG = "CustomGalleryActivity";
     private static final int MAX_IMAGES = 9;
 
@@ -31,12 +31,12 @@ public class CustomGalleryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_gallery);
+        setContentView(R.layout.activity_custom_photo_gallery);
 
         Log.d(TAG, "onCreate called");
 
         recyclerView = findViewById(R.id.recyclerView);
-        doneButton = findViewById(R.id.doneButton);
+        doneButton = findViewById(R.id.photo_done_Button);
 
         selectedImageUris = getIntent().getStringArrayListExtra("selectedImages");
         if (selectedImageUris == null) {

@@ -36,7 +36,7 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate called");
 
         recyclerView = findViewById(R.id.recyclerView);
-        doneButton = findViewById(R.id.doneButton);
+        doneButton = findViewById(R.id.video_done_Button);
 
         selectedVideoUris = getIntent().getStringArrayListExtra("selectedVideos");
         if (selectedVideoUris == null) {
