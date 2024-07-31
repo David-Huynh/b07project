@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.b07project2024.group1.R;
 import com.google.gson.Gson;
@@ -41,6 +42,8 @@ public class PhotosPickerFragment extends Fragment {
     private Button uploadButton;
     private ArrayList<String> selectedImageUris = new ArrayList<>();
 
+    private PhotoFilesViewModel photoFilesViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photos_picker, container, false);
@@ -51,6 +54,8 @@ public class PhotosPickerFragment extends Fragment {
 
         selectButton.setOnClickListener(v -> checkPermissionAndOpenGallery());
         uploadButton.setOnClickListener(v -> uploadImages());
+
+        photoFilesViewModel = new ViewModelProvider(requireActivity()).get(PhotoFilesViewModel.class);
 
         loadSelectedImages();
         updateGridLayout();
@@ -119,9 +124,18 @@ public class PhotosPickerFragment extends Fragment {
     }
 
     private void uploadImages() {
-        // TODO: Implement the actual upload logic here
-        // For now, we'll just simulate an upload and return to the previous fragment
-        Toast.makeText(requireContext(), "Uploading " + selectedImageUris.size() + " images", Toast.LENGTH_SHORT).show();
+        ArrayList<String> validUris = new ArrayList<>();
+        for (String uriString : selectedImageUris) {
+            if (uriString.startsWith("content://")) {
+                validUris.add(uriString);
+            } else {
+                Log.w(TAG, "Skipping invalid URI: " + uriString);
+            }
+        }
+
+        photoFilesViewModel.selectItem(validUris);
+
+        Toast.makeText(requireContext(), "Uploading " + validUris.size() + " images", Toast.LENGTH_SHORT).show();
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();
         }
@@ -144,7 +158,14 @@ public class PhotosPickerFragment extends Fragment {
         ArrayList<String> loadedUris = gson.fromJson(json, type);
 
         if (loadedUris != null) {
-            selectedImageUris = loadedUris;
+            selectedImageUris = new ArrayList<>();
+            for (String uriString : loadedUris) {
+                if (uriString.startsWith("content://")) {
+                    selectedImageUris.add(uriString);
+                } else {
+                    Log.w(TAG, "Skipping invalid URI during load: " + uriString);
+                }
+            }
         } else {
             selectedImageUris = new ArrayList<>();
         }

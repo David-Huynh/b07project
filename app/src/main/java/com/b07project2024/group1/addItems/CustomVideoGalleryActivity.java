@@ -1,6 +1,7 @@
 package com.b07project2024.group1.addItems;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,7 +26,7 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private VideoGalleryAdapter adapter;
     private List<String> allVideos;
-    private ArrayList<String> selectedPhotoUris;
+    private ArrayList<String> selectedVideoUris;
     private Button doneButton;
 
     @Override
@@ -38,14 +39,14 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         doneButton = findViewById(R.id.video_done_Button);
 
-        selectedPhotoUris = getIntent().getStringArrayListExtra("selectedVideos");
-        if (selectedPhotoUris == null) {
-            selectedPhotoUris = new ArrayList<>();
+        selectedVideoUris = getIntent().getStringArrayListExtra("selectedVideos");
+        if (selectedVideoUris == null) {
+            selectedVideoUris = new ArrayList<>();
         }
 
         loadVideosFromGallery();
 
-        adapter = new VideoGalleryAdapter(allVideos, selectedPhotoUris, this::toggleVideoSelection);
+        adapter = new VideoGalleryAdapter(allVideos, selectedVideoUris, this::toggleVideoSelection);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setAdapter(adapter);
 
@@ -58,15 +59,16 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
         Log.d(TAG, "loadVideosFromGallery called");
         allVideos = new ArrayList<>();
         Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Video.Media._ID, MediaStore.Video.Media.DATA};
+        String[] projection = {MediaStore.Video.Media._ID};
         String sortOrder = MediaStore.Video.Media.DATE_TAKEN + " DESC";
 
         try (Cursor cursor = getContentResolver().query(uri, projection, null, null, sortOrder)) {
             if (cursor != null) {
-                int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
                 while (cursor.moveToNext()) {
-                    String videoPath = cursor.getString(dataColumn);
-                    allVideos.add(videoPath);
+                    long id = cursor.getLong(idColumn);
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
+                    allVideos.add(contentUri.toString());
                 }
                 Log.d(TAG, "Loaded " + allVideos.size() + " videos");
             } else {
@@ -81,12 +83,11 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
             Toast.makeText(this, "No videos found", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void toggleVideoSelection(String videoPath) {
-        if (selectedPhotoUris.contains(videoPath)) {
-            selectedPhotoUris.remove(videoPath);
-        } else if (selectedPhotoUris.size() < MAX_VIDEOS) {
-            selectedPhotoUris.add(videoPath);
+        if (selectedVideoUris.contains(videoPath)) {
+            selectedVideoUris.remove(videoPath);
+        } else if (selectedVideoUris.size() < MAX_VIDEOS) {
+            selectedVideoUris.add(videoPath);
         } else {
             Toast.makeText(this, "Maximum " + MAX_VIDEOS + " videos allowed", Toast.LENGTH_SHORT).show();
         }
@@ -95,12 +96,12 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
     }
 
     private void updateDoneButtonState() {
-        doneButton.setEnabled(!selectedPhotoUris.isEmpty());
+        doneButton.setEnabled(!selectedVideoUris.isEmpty());
     }
 
     private void finishSelection() {
         Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("selectedVideos", selectedPhotoUris);
+        resultIntent.putStringArrayListExtra("selectedVideos", selectedVideoUris);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }

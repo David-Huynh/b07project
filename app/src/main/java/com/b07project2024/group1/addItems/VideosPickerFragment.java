@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.b07project2024.group1.R;
 import com.google.gson.Gson;
@@ -43,6 +44,8 @@ public class VideosPickerFragment extends Fragment {
     private Button uploadButton;
     private ArrayList<String> selectedVideoUris = new ArrayList<>();
 
+    private VideoFilesViewModel videoFilesViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_picker, container, false);
@@ -53,6 +56,8 @@ public class VideosPickerFragment extends Fragment {
 
         selectButton.setOnClickListener(v -> checkPermissionAndOpenGallery());
         uploadButton.setOnClickListener(v -> uploadVideos());
+
+        videoFilesViewModel = new ViewModelProvider(requireActivity()).get(VideoFilesViewModel.class);
 
         loadSelectedVideos();
         updateGridLayout();
@@ -141,9 +146,18 @@ public class VideosPickerFragment extends Fragment {
     }
 
     private void uploadVideos() {
-        // TODO: Implement the actual upload logic here
-        // For now, we'll just simulate an upload and return to the previous fragment
-        Toast.makeText(requireContext(), "Uploading " + selectedVideoUris.size() + " videos", Toast.LENGTH_SHORT).show();
+        ArrayList<String> validUris = new ArrayList<>();
+        for (String uriString : selectedVideoUris) {
+            if (uriString.startsWith("content://")) {
+                validUris.add(uriString);
+            } else {
+                Log.w(TAG, "Skipping invalid URI: " + uriString);
+            }
+        }
+
+        videoFilesViewModel.selectItem(validUris);
+
+        Toast.makeText(requireContext(), "Uploading " + validUris.size() + " images", Toast.LENGTH_SHORT).show();
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();
         }
@@ -166,7 +180,14 @@ public class VideosPickerFragment extends Fragment {
         ArrayList<String> loadedUris = gson.fromJson(json, type);
 
         if (loadedUris != null) {
-            selectedVideoUris = loadedUris;
+            selectedVideoUris = new ArrayList<>();
+            for (String uriString : loadedUris) {
+                if (uriString.startsWith("content://")) {
+                    selectedVideoUris.add(uriString);
+                } else {
+                    Log.w(TAG, "Skipping invalid URI during load: " + uriString);
+                }
+            }
         } else {
             selectedVideoUris = new ArrayList<>();
         }

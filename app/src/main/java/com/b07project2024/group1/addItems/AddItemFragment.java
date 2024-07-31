@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.b07project2024.group1.CatalogItem;
 import com.b07project2024.group1.R;
@@ -27,6 +28,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +50,9 @@ public class AddItemFragment extends Fragment {
     private ArrayList<String> selectedVideoUris = new ArrayList<>();
     private List<String> uploadedURLs = new ArrayList<>();
 
+    private PhotoFilesViewModel photoFilesViewModel;
+    private VideoFilesViewModel videoFilesViewModel;
+
     @Override
     public void onDestroy(){
         super.onDestroy();
@@ -54,31 +60,20 @@ public class AddItemFragment extends Fragment {
         clearSharedPreferences("VideoPickerPrefs");
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        // Set up fragment result listeners
-        getParentFragmentManager().setFragmentResultListener("photoPickerResult", this, (requestKey, result) -> {
-            selectedPhotoUris = result.getStringArrayList("selectedImages");
-            Log.d(TAG, "Received " + selectedPhotoUris.size() + " images from PhotoPicker");
-        });
-
-        getParentFragmentManager().setFragmentResultListener("videoPickerResult", this, (requestKey, result) -> {
-            selectedVideoUris = result.getStringArrayList("selectedVideos");
-            Log.d(TAG, "Received " + selectedVideoUris.size() + " videos from VideoPicker");
-        });
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_item, container, false);
 
+        photoFilesViewModel = new ViewModelProvider(requireActivity()).get(PhotoFilesViewModel.class);
+        videoFilesViewModel = new ViewModelProvider(requireActivity()).get(VideoFilesViewModel.class);
+
         initializeViews(view);
         setupFirebase();
         setupSpinners();
         setupButtons();
+
+
 
         return view;
     }
@@ -125,11 +120,33 @@ public class AddItemFragment extends Fragment {
     }
 
     private void submitCatalogItem() {
-        if (!validateInput()) return;
+        //if (!validateInput()) return;
+
+
+        // Receive the data from photoViewModel
+        photoFilesViewModel.getSelectedItem().observe(getViewLifecycleOwner(), mediaFiles -> {
+            if (mediaFiles != null) {
+                selectedPhotoUris.clear();
+                selectedPhotoUris.addAll(mediaFiles);
+                Log.d("AddItemFragment", "selectedPhotoUris size: "+selectedPhotoUris.size());
+            }
+            });
+
+        // Receive the data from videoViewModel
+        videoFilesViewModel.getSelectedItem().observe(getViewLifecycleOwner(), mediaFiles -> {
+            if (mediaFiles != null) {
+                selectedVideoUris.clear();
+                selectedVideoUris.addAll(mediaFiles);
+                Log.d("AddItemFragment", "selectedVideoUris size: "+selectedVideoUris.size());
+            }
+        });
+
+
 
         Log.d(TAG, "Submitting with " + selectedPhotoUris.size() + " images and " + selectedVideoUris.size() + " videos");
 
         uploadMediaFiles();
+
     }
 
     private boolean validateInput() {
@@ -146,6 +163,7 @@ public class AddItemFragment extends Fragment {
 
     private void uploadMediaFiles() {
         uploadedURLs.clear();
+        Log.d("AddItemFragment", "selectedPhotoUris size3: "+selectedPhotoUris.size());
         int totalFiles = selectedPhotoUris.size() + selectedVideoUris.size();
         Log.d(TAG, "Total files to upload: " + totalFiles);
         AtomicInteger uploadedCount = new AtomicInteger(0);
@@ -156,6 +174,7 @@ public class AddItemFragment extends Fragment {
         }
 
         for (String uriString : selectedPhotoUris) {
+            Log.d("AddItemFragment", "URI String: " + Uri.parse(uriString));
             uploadFile(Uri.parse(uriString), "images/", uploadedCount, totalFiles);
         }
         for (String uriString : selectedVideoUris) {
@@ -163,9 +182,11 @@ public class AddItemFragment extends Fragment {
         }
     }
 
-    private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
+    /*private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
+
         StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
         UploadTask uploadTask = fileRef.putFile(fileUri);
+        Log.d("AddItemFragment", "works fine");
 
         uploadTask.addOnFailureListener(exception -> {
             Log.e(TAG, "Upload failed: " + exception.getMessage());
@@ -180,6 +201,37 @@ public class AddItemFragment extends Fragment {
                 }
             });
         });
+    }*/
+
+    private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
+        StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
+
+        try {
+            InputStream stream = requireContext().getContentResolver().openInputStream(fileUri);
+            if (stream != null) {
+                UploadTask uploadTask = fileRef.putStream(stream);
+
+                uploadTask.addOnFailureListener(exception -> {
+                    Log.e(TAG, "Upload failed: " + exception.getMessage());
+                    Toast.makeText(getContext(), "Upload failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                }).addOnSuccessListener(taskSnapshot -> {
+                    fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        uploadedURLs.add(uri.toString());
+                        if (uploadedCount.incrementAndGet() == totalFiles) {
+                            List<String> imageUrls = uploadedURLs.subList(0, selectedPhotoUris.size());
+                            List<String> videoUrls = uploadedURLs.subList(selectedVideoUris.size(), uploadedURLs.size());
+                            addItemToDatabase(imageUrls, videoUrls);
+                        }
+                    });
+                });
+            } else {
+                Log.e(TAG, "Failed to open input stream for file: " + fileUri);
+                Toast.makeText(getContext(), "Failed to open file", Toast.LENGTH_LONG).show();
+            }
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.getMessage());
+            Toast.makeText(getContext(), "File not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void addItemToDatabase(List<String> imageUrls, List<String> videoUrls) {

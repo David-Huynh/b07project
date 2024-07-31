@@ -1,6 +1,7 @@
 package com.b07project2024.group1.addItems;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -58,16 +59,16 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
         Log.d(TAG, "loadImagesFromGallery called");
         allImages = new ArrayList<>();
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA};
+        String[] projection = {MediaStore.Images.Media._ID};
         String sortOrder = MediaStore.Images.Media.DATE_TAKEN + " DESC";
 
         try (Cursor cursor = getContentResolver().query(uri, projection, null, null, sortOrder)) {
             if (cursor != null) {
                 int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 while (cursor.moveToNext()) {
-                    String imagePath = cursor.getString(dataColumn);
-                    allImages.add(imagePath);
+                    long id = cursor.getLong(idColumn);
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                    allImages.add(contentUri.toString());
                 }
                 Log.d(TAG, "Loaded " + allImages.size() + " images");
             } else {
