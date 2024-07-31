@@ -31,7 +31,9 @@ import com.google.firebase.storage.UploadTask;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -120,7 +122,7 @@ public class AddItemFragment extends Fragment {
     }
 
     private void submitCatalogItem() {
-        //if (!validateInput()) return;
+        if (!validateInput()) return;
 
 
         // Receive the data from photoViewModel
@@ -152,9 +154,7 @@ public class AddItemFragment extends Fragment {
     private boolean validateInput() {
         if (editTextLotNumber.getText().toString().trim().isEmpty() ||
                 editTextName.getText().toString().trim().isEmpty() ||
-                editTextDescription.getText().toString().trim().isEmpty() ||
-                spinnerCategory.getSelectedItemPosition() == 0 ||
-                spinnerPeriod.getSelectedItemPosition() == 0) {
+                editTextDescription.getText().toString().trim().isEmpty() ) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -182,27 +182,6 @@ public class AddItemFragment extends Fragment {
         }
     }
 
-    /*private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
-
-        StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
-        UploadTask uploadTask = fileRef.putFile(fileUri);
-        Log.d("AddItemFragment", "works fine");
-
-        uploadTask.addOnFailureListener(exception -> {
-            Log.e(TAG, "Upload failed: " + exception.getMessage());
-            Toast.makeText(getContext(), "Upload failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-        }).addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                uploadedURLs.add(uri.toString());
-                if (uploadedCount.incrementAndGet() == totalFiles) {
-                    List<String> imageUrls = uploadedURLs.subList(0, selectedPhotoUris.size());
-                    List<String> videoUrls = uploadedURLs.subList(selectedVideoUris.size(), uploadedURLs.size());
-                    addItemToDatabase(imageUrls, videoUrls);
-                }
-            });
-        });
-    }*/
-
     private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
         StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
 
@@ -218,8 +197,8 @@ public class AddItemFragment extends Fragment {
                     fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         uploadedURLs.add(uri.toString());
                         if (uploadedCount.incrementAndGet() == totalFiles) {
-                            List<String> imageUrls = uploadedURLs.subList(0, selectedPhotoUris.size());
-                            List<String> videoUrls = uploadedURLs.subList(selectedVideoUris.size(), uploadedURLs.size());
+                            List<String> imageUrls = new ArrayList<>(uploadedURLs.subList(0, selectedPhotoUris.size()));
+                            List<String> videoUrls = new ArrayList<>(uploadedURLs.subList(selectedPhotoUris.size(), uploadedURLs.size()));
                             addItemToDatabase(imageUrls, videoUrls);
                         }
                     });
@@ -241,11 +220,19 @@ public class AddItemFragment extends Fragment {
         String period = spinnerPeriod.getSelectedItem().toString();
         String description = editTextDescription.getText().toString().trim();
 
-        DatabaseReference itemsRef = db.getReference("catalog_items");
+        DatabaseReference catalogItemsRef = db.getReference("catalog_items");
 
-        CatalogItem item = new CatalogItem(lotNumber, name, category, description, period, imageUrls, videoUrls);
+        // Create a HashMap to represent the item
+        Map<String, Object> item = new HashMap<>();
+        item.put("name", name);
+        item.put("category", category);
+        item.put("description", description);
+        item.put("period", period);
+        item.put("imageUrls", imageUrls);
+        item.put("videoUrls", videoUrls);
 
-        itemsRef.child(lotNumber).setValue(item)
+        // Use the lot number as the key for this catalog item
+        catalogItemsRef.child(lotNumber).setValue(item)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Item added successfully.");
                     Toast.makeText(getContext(), "Item added successfully", Toast.LENGTH_SHORT).show();
@@ -255,9 +242,11 @@ public class AddItemFragment extends Fragment {
                     Log.e(TAG, "Failed to add item: " + e.getMessage());
                     Toast.makeText(getContext(), "Failed to add item: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
+
         clearSharedPreferences("PhotoPickerPrefs");
         clearSharedPreferences("VideoPickerPrefs");
     }
+
     // Clear the SharedPreference file in the internal storage:
     private void clearSharedPreferences(String prefName) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(prefName, Context.MODE_PRIVATE);
