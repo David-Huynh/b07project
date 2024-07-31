@@ -19,13 +19,13 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/selectButton"
+            android:id="@+id/select_image_Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select Images" />
 
         <Button
-            android:id="@+id/uploadButton"
+            android:id="@+id/upload_image_Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Upload Images" />

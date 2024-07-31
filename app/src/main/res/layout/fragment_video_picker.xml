@@ -13,13 +13,13 @@
         android:columnCount="3" />
 
     <Button
-        android:id="@+id/selectButton"
+        android:id="@+id/select_video_Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select Videos" />
 
     <Button
-        android:id="@+id/uploadButton"
+        android:id="@+id/upload_video_Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Upload Videos" />

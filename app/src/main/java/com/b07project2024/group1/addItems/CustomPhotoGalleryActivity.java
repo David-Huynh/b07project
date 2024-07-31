@@ -23,9 +23,9 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
     private static final int MAX_IMAGES = 9;
 
     private RecyclerView recyclerView;
-    private GalleryAdapter adapter;
+    private PhotoGalleryAdapter adapter;
     private List<String> allImages;
-    private ArrayList<String> selectedImageUris;
+    private ArrayList<String> selectedPhotoUris;
     private Button doneButton;
 
     @Override
@@ -38,14 +38,14 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         doneButton = findViewById(R.id.photo_done_Button);
 
-        selectedImageUris = getIntent().getStringArrayListExtra("selectedImages");
-        if (selectedImageUris == null) {
-            selectedImageUris = new ArrayList<>();
+        selectedPhotoUris = getIntent().getStringArrayListExtra("selectedImages");
+        if (selectedPhotoUris == null) {
+            selectedPhotoUris = new ArrayList<>();
         }
 
         loadImagesFromGallery();
 
-        adapter = new GalleryAdapter(allImages, selectedImageUris, this::toggleImageSelection);
+        adapter = new PhotoGalleryAdapter(allImages, selectedPhotoUris, this::toggleImageSelection);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setAdapter(adapter);
 
@@ -84,10 +84,10 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
     }
 
     private void toggleImageSelection(String imagePath) {
-        if (selectedImageUris.contains(imagePath)) {
-            selectedImageUris.remove(imagePath);
-        } else if (selectedImageUris.size() < MAX_IMAGES) {
-            selectedImageUris.add(imagePath);
+        if (selectedPhotoUris.contains(imagePath)) {
+            selectedPhotoUris.remove(imagePath);
+        } else if (selectedPhotoUris.size() < MAX_IMAGES) {
+            selectedPhotoUris.add(imagePath);
         } else {
             Toast.makeText(this, "Maximum " + MAX_IMAGES + " images allowed", Toast.LENGTH_SHORT).show();
         }
@@ -96,12 +96,12 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
     }
 
     private void updateDoneButtonState() {
-        doneButton.setEnabled(!selectedImageUris.isEmpty());
+        doneButton.setEnabled(!selectedPhotoUris.isEmpty());
     }
 
     private void finishSelection() {
         Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("selectedImages", selectedImageUris);
+        resultIntent.putStringArrayListExtra("selectedImages", selectedPhotoUris);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }

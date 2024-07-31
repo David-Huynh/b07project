@@ -21,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.b07project2024.group1.R;
 import com.google.gson.Gson;
@@ -48,8 +46,8 @@ public class PhotosPickerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photos_picker, container, false);
 
         gridLayout = view.findViewById(R.id.gridLayout);
-        selectButton = view.findViewById(R.id.selectButton);
-        uploadButton = view.findViewById(R.id.uploadButton);
+        selectButton = view.findViewById(R.id.select_image_Button);
+        uploadButton = view.findViewById(R.id.upload_image_Button);
 
         selectButton.setOnClickListener(v -> checkPermissionAndOpenGallery());
         uploadButton.setOnClickListener(v -> uploadImages());
@@ -121,7 +119,12 @@ public class PhotosPickerFragment extends Fragment {
     }
 
     private void uploadImages() {
-        // Navigate back
+        // TODO: Implement the actual upload logic here
+        // For now, we'll just simulate an upload and return to the previous fragment
+        Toast.makeText(requireContext(), "Uploading " + selectedImageUris.size() + " images", Toast.LENGTH_SHORT).show();
+        if (getParentFragmentManager() != null) {
+            getParentFragmentManager().popBackStack();
+        }
     }
 
     private void saveSelectedImages() {

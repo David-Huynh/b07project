@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,8 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.b07project2024.group1.R;
 import com.google.gson.Gson;
@@ -31,30 +31,30 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class VideosPickerFragment extends Fragment {
-    private static final String TAG = "PhotosPickerFragment";
+    private static final String TAG = "VideosPickerFragment";
     private static final int REQUEST_GALLERY = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
-    private static final int MAX_IMAGES = 9;
-    private static final String PREF_NAME = "PhotoPickerPrefs";
-    private static final String KEY_SELECTED_IMAGES = "SelectedImages";
+    private static final int MAX_VIDEOS = 2;
+    private static final String PREF_NAME = "VideoPickerPrefs";
+    private static final String KEY_SELECTED_VIDEOS = "SelectedVideos";
 
     private GridLayout gridLayout;
     private Button selectButton;
     private Button uploadButton;
-    private ArrayList<String> selectedImageUris = new ArrayList<>();
+    private ArrayList<String> selectedVideoUris = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_photos_picker, container, false);
+        View view = inflater.inflate(R.layout.fragment_video_picker, container, false);
 
         gridLayout = view.findViewById(R.id.gridLayout);
-        selectButton = view.findViewById(R.id.selectButton);
-        uploadButton = view.findViewById(R.id.uploadButton);
+        selectButton = view.findViewById(R.id.select_video_Button);
+        uploadButton = view.findViewById(R.id.upload_video_Button);
 
         selectButton.setOnClickListener(v -> checkPermissionAndOpenGallery());
-        uploadButton.setOnClickListener(v -> uploadImages());
+        uploadButton.setOnClickListener(v -> uploadVideos());
 
-        loadSelectedImages();
+        loadSelectedVideos();
         updateGridLayout();
         return view;
     }
@@ -62,8 +62,8 @@ public class VideosPickerFragment extends Fragment {
     private void checkPermissionAndOpenGallery() {
         Log.d(TAG, "checkPermissionAndOpenGallery called");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_VIDEO}, PERMISSION_REQUEST_CODE);
             } else {
                 openCustomGallery();
             }
@@ -89,8 +89,8 @@ public class VideosPickerFragment extends Fragment {
 
     private void openCustomGallery() {
         try {
-            Intent intent = new Intent(requireActivity(), CustomPhotoGalleryActivity.class);
-            intent.putStringArrayListExtra("selectedImages", selectedImageUris);
+            Intent intent = new Intent(requireActivity(), CustomVideoGalleryActivity.class);
+            intent.putStringArrayListExtra("selectedVideos", selectedVideoUris);
             startActivityForResult(intent, REQUEST_GALLERY);
         } catch (Exception e) {
             Log.e(TAG, "Error opening gallery: ", e);
@@ -101,59 +101,84 @@ public class VideosPickerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            selectedImageUris = data.getStringArrayListExtra("selectedImages");
-            saveSelectedImages();
+            selectedVideoUris = data.getStringArrayListExtra("selectedVideos");
+            saveSelectedVideos();
             updateGridLayout();
         }
     }
 
     private void updateGridLayout() {
         gridLayout.removeAllViews();
-        for (String uriString : selectedImageUris) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        for (String uriString : selectedVideoUris) {
             ImageView imageView = new ImageView(requireContext());
-            imageView.setImageURI(Uri.parse(uriString));
+
+            try {
+                retriever.setDataSource(requireContext(), Uri.parse(uriString));
+                Bitmap thumbnail = retriever.getFrameAtTime();
+
+                if (thumbnail != null) {
+                    imageView.setImageBitmap(thumbnail);
+                } else {
+                    imageView.setImageResource(R.drawable.video_placeholder);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error creating thumbnail: " + e.getMessage());
+                imageView.setImageResource(R.drawable.video_placeholder);
+            }
+
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = getResources().getDimensionPixelSize(R.dimen.grid_image_size);
-            params.height = getResources().getDimensionPixelSize(R.dimen.grid_image_size);
+            params.width = getResources().getDimensionPixelSize(R.dimen.grid_video_size);
+            params.height = getResources().getDimensionPixelSize(R.dimen.grid_video_size);
             params.setMargins(8, 8, 8, 8);
             gridLayout.addView(imageView, params);
         }
+        try {
+            retriever.release();
+        } catch (Exception e) {
+            Log.e(TAG, "Error releasing MediaMetadataRetriever: " + e.getMessage());
+        }
     }
 
-    private void uploadImages() {
-        // Navigate back
+    private void uploadVideos() {
+        // TODO: Implement the actual upload logic here
+        // For now, we'll just simulate an upload and return to the previous fragment
+        Toast.makeText(requireContext(), "Uploading " + selectedVideoUris.size() + " videos", Toast.LENGTH_SHORT).show();
+        if (getParentFragmentManager() != null) {
+            getParentFragmentManager().popBackStack();
+        }
     }
 
-    private void saveSelectedImages() {
+    private void saveSelectedVideos() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(selectedImageUris);
-        editor.putString(KEY_SELECTED_IMAGES, json);
+        String json = gson.toJson(selectedVideoUris);
+        editor.putString(KEY_SELECTED_VIDEOS, json);
         editor.apply();
     }
 
-    private void loadSelectedImages() {
+    private void loadSelectedVideos() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(KEY_SELECTED_IMAGES, null);
+        String json = sharedPreferences.getString(KEY_SELECTED_VIDEOS, null);
         Type type = new TypeToken<ArrayList<String>>() {}.getType();
         ArrayList<String> loadedUris = gson.fromJson(json, type);
 
         if (loadedUris != null) {
-            selectedImageUris = loadedUris;
+            selectedVideoUris = loadedUris;
         } else {
-            selectedImageUris = new ArrayList<>();
+            selectedVideoUris = new ArrayList<>();
         }
     }
 
-    public ArrayList<String> getSelectedImageUris() {
-        return selectedImageUris;
+    public ArrayList<String> getSelectedVideoUris() {
+        return selectedVideoUris;
     }
 
     public void clearSelection() {
-        selectedImageUris.clear();
+        selectedVideoUris.clear();
         updateGridLayout();
-        saveSelectedImages();
+        saveSelectedVideos();
     }
 }

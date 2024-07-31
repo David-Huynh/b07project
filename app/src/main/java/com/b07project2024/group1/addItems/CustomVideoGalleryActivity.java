@@ -25,7 +25,7 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private VideoGalleryAdapter adapter;
     private List<String> allVideos;
-    private ArrayList<String> selectedVideoUris;
+    private ArrayList<String> selectedPhotoUris;
     private Button doneButton;
 
     @Override
@@ -38,14 +38,14 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         doneButton = findViewById(R.id.video_done_Button);
 
-        selectedVideoUris = getIntent().getStringArrayListExtra("selectedVideos");
-        if (selectedVideoUris == null) {
-            selectedVideoUris = new ArrayList<>();
+        selectedPhotoUris = getIntent().getStringArrayListExtra("selectedVideos");
+        if (selectedPhotoUris == null) {
+            selectedPhotoUris = new ArrayList<>();
         }
 
         loadVideosFromGallery();
 
-        adapter = new VideoGalleryAdapter(allVideos, selectedVideoUris, this::toggleVideoSelection);
+        adapter = new VideoGalleryAdapter(allVideos, selectedPhotoUris, this::toggleVideoSelection);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         recyclerView.setAdapter(adapter);
 
@@ -83,10 +83,10 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
     }
 
     private void toggleVideoSelection(String videoPath) {
-        if (selectedVideoUris.contains(videoPath)) {
-            selectedVideoUris.remove(videoPath);
-        } else if (selectedVideoUris.size() < MAX_VIDEOS) {
-            selectedVideoUris.add(videoPath);
+        if (selectedPhotoUris.contains(videoPath)) {
+            selectedPhotoUris.remove(videoPath);
+        } else if (selectedPhotoUris.size() < MAX_VIDEOS) {
+            selectedPhotoUris.add(videoPath);
         } else {
             Toast.makeText(this, "Maximum " + MAX_VIDEOS + " videos allowed", Toast.LENGTH_SHORT).show();
         }
@@ -95,12 +95,12 @@ public class CustomVideoGalleryActivity extends AppCompatActivity {
     }
 
     private void updateDoneButtonState() {
-        doneButton.setEnabled(!selectedVideoUris.isEmpty());
+        doneButton.setEnabled(!selectedPhotoUris.isEmpty());
     }
 
     private void finishSelection() {
         Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("selectedVideos", selectedVideoUris);
+        resultIntent.putStringArrayListExtra("selectedVideos", selectedPhotoUris);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }

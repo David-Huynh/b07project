@@ -1,6 +1,7 @@
 package com.b07project2024.group1.addItems;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,9 +43,16 @@ public class AddItemFragment extends Fragment {
     private FirebaseDatabase db;
     private FirebaseStorage storage;
 
-    private ArrayList<String> selectedImageUris = new ArrayList<>();
+    private ArrayList<String> selectedPhotoUris = new ArrayList<>();
     private ArrayList<String> selectedVideoUris = new ArrayList<>();
     private List<String> uploadedURLs = new ArrayList<>();
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        clearSharedPreferences("PhotoPickerPrefs");
+        clearSharedPreferences("VideoPickerPrefs");
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -52,8 +60,8 @@ public class AddItemFragment extends Fragment {
 
         // Set up fragment result listeners
         getParentFragmentManager().setFragmentResultListener("photoPickerResult", this, (requestKey, result) -> {
-            selectedImageUris = result.getStringArrayList("selectedImages");
-            Log.d(TAG, "Received " + selectedImageUris.size() + " images from PhotoPicker");
+            selectedPhotoUris = result.getStringArrayList("selectedImages");
+            Log.d(TAG, "Received " + selectedPhotoUris.size() + " images from PhotoPicker");
         });
 
         getParentFragmentManager().setFragmentResultListener("videoPickerResult", this, (requestKey, result) -> {
@@ -119,7 +127,7 @@ public class AddItemFragment extends Fragment {
     private void submitCatalogItem() {
         if (!validateInput()) return;
 
-        Log.d(TAG, "Submitting with " + selectedImageUris.size() + " images and " + selectedVideoUris.size() + " videos");
+        Log.d(TAG, "Submitting with " + selectedPhotoUris.size() + " images and " + selectedVideoUris.size() + " videos");
 
         uploadMediaFiles();
     }
@@ -138,7 +146,7 @@ public class AddItemFragment extends Fragment {
 
     private void uploadMediaFiles() {
         uploadedURLs.clear();
-        int totalFiles = selectedImageUris.size() + selectedVideoUris.size();
+        int totalFiles = selectedPhotoUris.size() + selectedVideoUris.size();
         Log.d(TAG, "Total files to upload: " + totalFiles);
         AtomicInteger uploadedCount = new AtomicInteger(0);
 
@@ -147,7 +155,7 @@ public class AddItemFragment extends Fragment {
             return;
         }
 
-        for (String uriString : selectedImageUris) {
+        for (String uriString : selectedPhotoUris) {
             uploadFile(Uri.parse(uriString), "images/", uploadedCount, totalFiles);
         }
         for (String uriString : selectedVideoUris) {
@@ -166,8 +174,8 @@ public class AddItemFragment extends Fragment {
             fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 uploadedURLs.add(uri.toString());
                 if (uploadedCount.incrementAndGet() == totalFiles) {
-                    List<String> imageUrls = uploadedURLs.subList(0, selectedImageUris.size());
-                    List<String> videoUrls = uploadedURLs.subList(selectedImageUris.size(), uploadedURLs.size());
+                    List<String> imageUrls = uploadedURLs.subList(0, selectedPhotoUris.size());
+                    List<String> videoUrls = uploadedURLs.subList(selectedVideoUris.size(), uploadedURLs.size());
                     addItemToDatabase(imageUrls, videoUrls);
                 }
             });
@@ -195,6 +203,15 @@ public class AddItemFragment extends Fragment {
                     Log.e(TAG, "Failed to add item: " + e.getMessage());
                     Toast.makeText(getContext(), "Failed to add item: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
+        clearSharedPreferences("PhotoPickerPrefs");
+        clearSharedPreferences("VideoPickerPrefs");
+    }
+    // Clear the SharedPreference file in the internal storage:
+    private void clearSharedPreferences(String prefName) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 
     private void clearForm() {
@@ -204,8 +221,8 @@ public class AddItemFragment extends Fragment {
         spinnerCategory.setSelection(0);
         spinnerPeriod.setSelection(0);
 
-        selectedImageUris.clear();
-        selectedVideoUris.clear();
+        selectedPhotoUris.clear();
+        selectedPhotoUris.clear();
         uploadedURLs.clear();
     }
 }

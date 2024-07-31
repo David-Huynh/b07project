@@ -12,7 +12,7 @@ import com.b07project2024.group1.R;
 
 import java.util.List;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoGalleryAdapter.ViewHolder> {
     private List<String> allImages;
     private List<String> selectedImages;
     private OnImageClickListener listener;
@@ -21,7 +21,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         void onImageClick(String imagePath);
     }
 
-    public GalleryAdapter(List<String> allImages, List<String> selectedImages, OnImageClickListener listener) {
+    public PhotoGalleryAdapter(List<String> allImages, List<String> selectedImages, OnImageClickListener listener) {
         this.allImages = allImages;
         this.selectedImages = selectedImages;
         this.listener = listener;
