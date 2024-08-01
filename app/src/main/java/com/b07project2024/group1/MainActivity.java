@@ -1,27 +1,16 @@
 package com.b07project2024.group1;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import android.view.View;
 
 import dagger.hilt.android.AndroidEntryPoint;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
 import java.io.Serializable;
 
-=======
 @AndroidEntryPoint
->>>>>>> origin
-=======
-@AndroidEntryPoint
-=======
-import java.io.Serializable;
-
->>>>>>> 0a08e16 (first commit didnt add ViewSpecificItem.java)
->>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -39,20 +28,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     public void viewItem(View view){
         String id = "id";
         String title = "title";
@@ -66,10 +41,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-<<<<<<< HEAD
-=======
->>>>>>> origin
-=======
->>>>>>> 0a08e16 (first commit didnt add ViewSpecificItem.java)
->>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
 }
