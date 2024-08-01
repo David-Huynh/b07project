@@ -9,11 +9,19 @@ import androidx.fragment.app.FragmentTransaction;
 import dagger.hilt.android.AndroidEntryPoint;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.io.Serializable;
 
 =======
 @AndroidEntryPoint
 >>>>>>> origin
+=======
+@AndroidEntryPoint
+=======
+import java.io.Serializable;
+
+>>>>>>> 0a08e16 (first commit didnt add ViewSpecificItem.java)
+>>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -32,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -54,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+<<<<<<< HEAD
 =======
 >>>>>>> origin
+=======
+>>>>>>> 0a08e16 (first commit didnt add ViewSpecificItem.java)
+>>>>>>> refs/remotes/origin/feature/SCRUM-9/view-specific-item
 }
