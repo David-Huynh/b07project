@@ -2,6 +2,7 @@ package com.b07project2024.group1;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 
 public class FirebaseManager {
     private static FirebaseManager firebaseManager;
@@ -11,6 +12,7 @@ public class FirebaseManager {
     private FirebaseManager () {
         FirebaseDatabase fd = FirebaseDatabase.getInstance("https://b07project-group1-default-rtdb.firebaseio.com/");
         fd.setPersistenceEnabled(true);
+        fd.setLogLevel(Logger.Level.DEBUG);
         reference = fd.getReference();
         database = fd;
     }
