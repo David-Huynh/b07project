@@ -2,50 +2,36 @@ package com.b07project2024.group1;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.widget.Button;
-import android.view.View;
-import android.content.Intent;
+import dagger.hilt.android.AndroidEntryPoint;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
+<<<<<<< HEAD
 import java.io.Serializable;
 
+=======
+@AndroidEntryPoint
+>>>>>>> origin
 public class MainActivity extends AppCompatActivity {
-
-    FirebaseDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance("https://b07project-group1-default-rtdb.firebaseio.com/");
-        DatabaseReference myRef = db.getReference("testDemo");
-
-//        myRef.setValue("B07 Demo!");
-        myRef.child("movies").setValue("B07 Demo!");
-
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-        }
+        loadFragment(new CatalogFragment(), R.id.fragment_container);
     }
 
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, int id) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(id, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
+<<<<<<< HEAD
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -68,4 +54,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+=======
+>>>>>>> origin
 }
