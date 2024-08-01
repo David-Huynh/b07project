@@ -17,6 +17,8 @@ import android.content.Intent;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
+
 public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase db;
@@ -52,4 +54,18 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    public void viewItem(View view){
+        String id = "id";
+        String title = "title";
+        String author = "author";
+        String genre = "genre";
+        String description = "description";
+        Item item = new Item(id, title, author, genre, description);
+        Intent i = new Intent(this, ViewSpecificItem.class);
+        String name = "item";
+        i.putExtra(name, item);
+        startActivity(i);
+    }
+
 }
