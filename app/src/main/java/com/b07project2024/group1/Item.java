@@ -33,6 +33,7 @@ public class Item implements Parcelable {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    // Make Item parcelable for use in Intent
     public Item(Parcel in){
         String[] info = new String[5];
 
