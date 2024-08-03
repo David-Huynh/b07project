@@ -29,6 +29,7 @@ public class CatalogItem {
         this.period = period;
         this.imageURLs = imageURLs;
         this.videoURLs = videoURLs;
+
     }
 
 
@@ -49,6 +50,7 @@ public class CatalogItem {
     public List<String> getVideoURLs() {return videoURLs;}
     public void setVideoURLs(List<String> vids) {this.videoURLs = vids;}
     public void addVideoURLs(String vid) {this.videoURLs.add(vid);}
+
 
     /**
      *  Checks if two CatalogItem instances are equal in lot number and content
@@ -141,4 +143,3 @@ public class CatalogItem {
             return this.getPeriod().equals(item.getPeriod());
         return true;
     }
-}

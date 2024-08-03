@@ -10,30 +10,25 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.google.android.material.appbar.MaterialToolbar;
-
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
     private LoginViewModel loginViewModel;
     private CatalogSelectionViewModel selectionViewModel;
     private CatalogViewModel catalogViewModel;
-
     private Integer lastNavID;
     private boolean isSearched;
     private boolean isSelected;
     private boolean isAuthed;
 
     private DeleteItem delete;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,8 +58,10 @@ public class ContextTopMenuFragment extends Fragment {
         return view;
     }
 
-
-
+    /**
+     * Sets the Navigation icon to a back arrow or nothing based off stack count
+     * @param appBar navigation icon
+     */
     private void setNavigationIcon(MaterialToolbar appBar){
         if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() <= 1) {
             appBar.setNavigationIcon(null);
@@ -75,7 +72,10 @@ public class ContextTopMenuFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Clears selection if something is selected or goes back in the stack if exists
+     * @param appBar the navigation icon
+     */
     private void onNavigationClick(MaterialToolbar appBar) {
         if (isSelected) {
             selectionViewModel.clearSelectedItems();
@@ -85,6 +85,11 @@ public class ContextTopMenuFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         }
     }
+     /**
+     * Navigates users to the correct fragment based of the view clicked
+     * @param item the item clicked by the user
+     * @return true if successfully found the item
+     */
     private boolean onMenuClick (MenuItem item){
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
 
@@ -136,7 +141,6 @@ public class ContextTopMenuFragment extends Fragment {
                         Toast.makeText(getContext(), "Item(s) deleted from catalog", Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int k) {
                         dialog.cancel();
@@ -145,7 +149,6 @@ public class ContextTopMenuFragment extends Fragment {
                 alert.show();
             }
             return true;
-
         } else {
             return false;
         }
@@ -155,6 +158,11 @@ public class ContextTopMenuFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Changes the navigation icon of selected based off whether an item has been selected or not
+     * @param appBar selected icon
+     * @param items items selected
+     */
     private void setSelected(MaterialToolbar appBar, List<CatalogItem> items) {
         if (appBar != null && requireActivity().getSupportFragmentManager().getBackStackEntryCount() <= 1) {
             if (items != null && !items.isEmpty()) {
@@ -166,6 +174,12 @@ public class ContextTopMenuFragment extends Fragment {
             }
         }
     }
+
+    /**
+     * Changes the navigation icon of search based off whether an item has been searched
+     * @param search icon
+     * @param searched true if searched false if not
+     */
     private void setSearched(MenuItem search, CatalogItem searched) {
         if (search != null) {
             if (searched != null) {
@@ -177,6 +191,15 @@ public class ContextTopMenuFragment extends Fragment {
             }
         }
     }
+
+     /**
+     * Sets the visibility of the navigation icons based off whether isVisible is true
+     * @param user user's login/logout icon
+     * @param add add catalog item icon
+     * @param report generate report icon
+     * @param delete delete item icon
+     * @param isVisible the state of whether they are authed
+     */
     private void setVisibility(MenuItem user, MenuItem add, MenuItem report, MenuItem delete, Boolean isVisible) {
         isAuthed = isVisible;
         if (user != null) {

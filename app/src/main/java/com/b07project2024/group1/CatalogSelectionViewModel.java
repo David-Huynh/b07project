@@ -15,7 +15,6 @@ import java.util.List;
 public class CatalogSelectionViewModel extends ViewModel {
     private final MutableLiveData<List<CatalogItem>> selectedItems;
 
-
     public CatalogSelectionViewModel() {
         selectedItems = new MutableLiveData<>();
     }
@@ -33,7 +32,6 @@ public class CatalogSelectionViewModel extends ViewModel {
                     if (item.getLot().equals(key)) {
                         selectedItemsTemp.add(item);
                         break;
-
                     }
                 }
             }

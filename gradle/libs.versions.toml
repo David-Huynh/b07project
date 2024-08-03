@@ -54,6 +54,7 @@ robolectric = { module = "org.robolectric:robolectric" }
 robolectric-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
