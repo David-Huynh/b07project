@@ -55,12 +55,6 @@ public class AddItemFragment extends Fragment {
     private PhotoFilesViewModel photoFilesViewModel;
     private VideoFilesViewModel videoFilesViewModel;
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        clearSharedPreferences("PhotoPickerPrefs");
-        clearSharedPreferences("VideoPickerPrefs");
-    }
 
     @Nullable
     @Override
@@ -74,9 +68,7 @@ public class AddItemFragment extends Fragment {
         setupFirebase();
         setupSpinners();
         setupButtons();
-
-
-
+        
         return view;
     }
 
@@ -109,7 +101,11 @@ public class AddItemFragment extends Fragment {
     }
 
     private void setupButtons() {
-        buttonSubmit.setOnClickListener(v -> submitCatalogItem());
+        buttonSubmit.setOnClickListener(v -> submitCatalogItem(new UploadToFireBase(
+                uploadedURLs, selectedPhotoUris, selectedVideoUris,
+                TAG, storage, db, getContext(), editTextLotNumber, editTextName,
+                editTextDescription, spinnerCategory, spinnerPeriod)));
+
         buttonUploadImage.setOnClickListener(v -> loadFragment(new PhotosPickerFragment(), "PHOTOS_PICKER_FRAGMENT"));
         buttonUploadVideo.setOnClickListener(v -> loadFragment(new VideosPickerFragment(), "VIDEOS_PICKER_FRAGMENT"));
     }
@@ -121,7 +117,7 @@ public class AddItemFragment extends Fragment {
         transaction.commit();
     }
 
-    private void submitCatalogItem() {
+    private void submitCatalogItem(UploadToFireBase uploadToFireBase) {
         if (!validateInput()) return;
 
 
@@ -147,7 +143,7 @@ public class AddItemFragment extends Fragment {
 
         Log.d(TAG, "Submitting with " + selectedPhotoUris.size() + " images and " + selectedVideoUris.size() + " videos");
 
-        uploadMediaFiles();
+        uploadToFireBase.uploadMediaFiles();
 
     }
 
@@ -159,111 +155,5 @@ public class AddItemFragment extends Fragment {
             return false;
         }
         return true;
-    }
-
-    private void uploadMediaFiles() {
-        uploadedURLs.clear();
-        Log.d("AddItemFragment", "selectedPhotoUris size3: "+selectedPhotoUris.size());
-        int totalFiles = selectedPhotoUris.size() + selectedVideoUris.size();
-        Log.d(TAG, "Total files to upload: " + totalFiles);
-        AtomicInteger uploadedCount = new AtomicInteger(0);
-
-        if (totalFiles == 0) {
-            addItemToDatabase(new ArrayList<>(), new ArrayList<>());
-            return;
-        }
-
-        for (String uriString : selectedPhotoUris) {
-            Log.d("AddItemFragment", "URI String: " + Uri.parse(uriString));
-            uploadFile(Uri.parse(uriString), "images/", uploadedCount, totalFiles);
-        }
-        for (String uriString : selectedVideoUris) {
-            uploadFile(Uri.parse(uriString), "videos/", uploadedCount, totalFiles);
-        }
-    }
-
-    private void uploadFile(Uri fileUri, String folderName, AtomicInteger uploadedCount, int totalFiles) {
-        StorageReference fileRef = storage.getReference().child(folderName + UUID.randomUUID().toString());
-
-        try {
-            InputStream stream = requireContext().getContentResolver().openInputStream(fileUri);
-            if (stream != null) {
-                UploadTask uploadTask = fileRef.putStream(stream);
-
-                uploadTask.addOnFailureListener(exception -> {
-                    Log.e(TAG, "Upload failed: " + exception.getMessage());
-                    Toast.makeText(getContext(), "Upload failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-                }).addOnSuccessListener(taskSnapshot -> {
-                    fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        uploadedURLs.add(uri.toString());
-                        if (uploadedCount.incrementAndGet() == totalFiles) {
-                            List<String> imageUrls = new ArrayList<>(uploadedURLs.subList(0, selectedPhotoUris.size()));
-                            List<String> videoUrls = new ArrayList<>(uploadedURLs.subList(selectedPhotoUris.size(), uploadedURLs.size()));
-                            addItemToDatabase(imageUrls, videoUrls);
-                        }
-                    });
-                });
-            } else {
-                Log.e(TAG, "Failed to open input stream for file: " + fileUri);
-                Toast.makeText(getContext(), "Failed to open file", Toast.LENGTH_LONG).show();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.getMessage());
-            Toast.makeText(getContext(), "File not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void addItemToDatabase(List<String> imageUrls, List<String> videoUrls) {
-        String lotNumber = editTextLotNumber.getText().toString().trim();
-        String name = editTextName.getText().toString().trim();
-        String category = spinnerCategory.getSelectedItem().toString();
-        String period = spinnerPeriod.getSelectedItem().toString();
-        String description = editTextDescription.getText().toString().trim();
-
-        DatabaseReference catalogItemsRef = db.getReference("catalog_items");
-
-        // Create a HashMap to represent the item
-        Map<String, Object> item = new HashMap<>();
-        item.put("name", name);
-        item.put("category", category);
-        item.put("description", description);
-        item.put("period", period);
-        item.put("imageUrls", imageUrls);
-        item.put("videoUrls", videoUrls);
-
-        // Use the lot number as the key for this catalog item
-        catalogItemsRef.child(lotNumber).setValue(item)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Item added successfully.");
-                    Toast.makeText(getContext(), "Item added successfully", Toast.LENGTH_SHORT).show();
-                    clearForm();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to add item: " + e.getMessage());
-                    Toast.makeText(getContext(), "Failed to add item: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-
-        clearSharedPreferences("PhotoPickerPrefs");
-        clearSharedPreferences("VideoPickerPrefs");
-    }
-
-    // Clear the SharedPreference file in the internal storage:
-    private void clearSharedPreferences(String prefName) {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-    }
-
-    private void clearForm() {
-        editTextLotNumber.setText("");
-        editTextName.setText("");
-        editTextDescription.setText("");
-        spinnerCategory.setSelection(0);
-        spinnerPeriod.setSelection(0);
-
-        selectedPhotoUris.clear();
-        selectedPhotoUris.clear();
-        uploadedURLs.clear();
     }
 }

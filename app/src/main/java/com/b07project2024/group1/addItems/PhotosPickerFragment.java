@@ -38,8 +38,6 @@ public class PhotosPickerFragment extends Fragment {
     private static final String KEY_SELECTED_IMAGES = "SelectedImages";
 
     private GridLayout gridLayout;
-    private Button selectButton;
-    private Button uploadButton;
     private ArrayList<String> selectedImageUris = new ArrayList<>();
 
     private PhotoFilesViewModel photoFilesViewModel;
@@ -49,8 +47,8 @@ public class PhotosPickerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photos_picker, container, false);
 
         gridLayout = view.findViewById(R.id.gridLayout);
-        selectButton = view.findViewById(R.id.select_image_Button);
-        uploadButton = view.findViewById(R.id.upload_image_Button);
+        Button selectButton = view.findViewById(R.id.select_image_Button);
+        Button uploadButton = view.findViewById(R.id.upload_image_Button);
 
         selectButton.setOnClickListener(v -> checkPermissionAndOpenGallery());
         uploadButton.setOnClickListener(v -> uploadImages());
