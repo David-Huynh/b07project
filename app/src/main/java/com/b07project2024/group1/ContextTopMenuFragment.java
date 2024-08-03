@@ -18,7 +18,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
-    private LoginViewModel loginViewModel;
+    private AuthManager authManager;
     private CatalogSelectionViewModel selectionViewModel;
     private CatalogViewModel catalogViewModel;
 
@@ -45,12 +45,13 @@ public class ContextTopMenuFragment extends Fragment {
         setNavigationIcon(appBar);
         requireActivity().getSupportFragmentManager().addOnBackStackChangedListener(() -> setNavigationIcon(appBar));
 
-        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+        authManager = new AuthManager();
+        //authManager = new ViewModelProvider(requireActivity()).get(AuthManager.class);
         selectionViewModel = new ViewModelProvider(requireActivity()).get(CatalogSelectionViewModel.class);
         catalogViewModel = new ViewModelProvider(requireActivity()).get(CatalogViewModel.class);
 
         selectionViewModel.getSelectedItems().observe(getViewLifecycleOwner(), items -> setSelected(appBar, items));
-        loginViewModel.getLoginStatus().observe(getViewLifecycleOwner(), status -> setVisibility(login, add, report, delete, status));
+        authManager.getLoginStatus().observe(getViewLifecycleOwner(), status -> setVisibility(login, add, report, delete, status));
         catalogViewModel.getFilterLive().observe(getViewLifecycleOwner(), searched -> setSearched(search, searched));
         return view;
     }
@@ -64,7 +65,7 @@ public class ContextTopMenuFragment extends Fragment {
         int backStackCount = requireActivity().getSupportFragmentManager().getBackStackEntryCount();
         if (backStackCount <= 1) {
             appBar.setNavigationIcon(null);
-        }else {
+        } else {
             appBar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
         }
     }
@@ -98,9 +99,9 @@ public class ContextTopMenuFragment extends Fragment {
             }
         } else if (itemId == R.id.user) {
             if (isAuthed) {
-                loginViewModel.logout();
+                authManager.logout();
             } else {
-                transaction.replace(R.id.fragment_container, new CatalogFragment());
+                transaction.replace(R.id.fragment_container, new LoginFragment());
                 transaction.addToBackStack("Login");
             }
         } else if (itemId == R.id.add){
