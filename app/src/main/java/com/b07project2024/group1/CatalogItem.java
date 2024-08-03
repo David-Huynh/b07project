@@ -43,6 +43,7 @@ public class CatalogItem {
     public void setPeriod(String period) { this.period = period; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getPictureURL() { return "null"; }
 
     /**
      *  Checks if two CatalogItem instances are equal in lot number and content

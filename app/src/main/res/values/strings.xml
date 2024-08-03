@@ -10,6 +10,14 @@
     <string name="spinner">Spinner</string>
     <string name="manage_items">Manage Items</string>
 
+    <string name="catalog_name">Name</string>
+    <string name="catalog_lot">Lot Number</string>
+    <string name="catalog_category">Category</string>
+    <string name="catalog_period">Period</string>
+    <string name="catalog_description">Description</string>
+    <string name="catalog_content_description">Image of Catalog Item</string>
+    <string name="page_title" translatable="false">TAAM</string>
+
     <string-array name="categories_array">
         <item>Jade</item>
         <item>Paintings</item>
@@ -44,5 +52,19 @@
         <item>Modern</item>
     </string-array>
 
+    <string name="user">Login</string>
+    <string name="search">Search</string>
+    <string name="add">Add</string>
+    <string name="report">Generate Report</string>
+    <string name="delete">Delete</string>
 
+    <string name="content_description_user">Login</string>
+    <string name="content_description_search">
+        Navigates to a page to search for catalog items
+    </string>
+    <string name="content_description_add">
+        Navigates to a page to add an item to the Catalog
+    </string>
+    <string name="content_description_report">Navigates to a page to generate a report about catalog items</string>
+    <string name="content_description_delete">Deletes the selected catalog items</string>
 </resources>
