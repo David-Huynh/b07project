@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,8 +46,7 @@ public class ContextTopMenuFragment extends Fragment {
         setNavigationIcon(appBar);
         requireActivity().getSupportFragmentManager().addOnBackStackChangedListener(() -> setNavigationIcon(appBar));
 
-        authManager = new AuthManager();
-        //authManager = new ViewModelProvider(requireActivity()).get(AuthManager.class);
+        authManager = AuthManager.getInstance();
         selectionViewModel = new ViewModelProvider(requireActivity()).get(CatalogSelectionViewModel.class);
         catalogViewModel = new ViewModelProvider(requireActivity()).get(CatalogViewModel.class);
 
@@ -56,7 +56,6 @@ public class ContextTopMenuFragment extends Fragment {
         return view;
     }
 
-
     /**
      * Sets the Navigation icon to a back arrow or nothing based off stack count
      * @param appBar navigation icon
@@ -65,7 +64,7 @@ public class ContextTopMenuFragment extends Fragment {
         int backStackCount = requireActivity().getSupportFragmentManager().getBackStackEntryCount();
         if (backStackCount <= 1) {
             appBar.setNavigationIcon(null);
-        } else {
+        }else {
             appBar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
         }
     }
@@ -100,6 +99,7 @@ public class ContextTopMenuFragment extends Fragment {
         } else if (itemId == R.id.user) {
             if (isAuthed) {
                 authManager.logout();
+                authManager.getLoginStatus();
             } else {
                 transaction.replace(R.id.fragment_container, new LoginFragment());
                 transaction.addToBackStack("Login");

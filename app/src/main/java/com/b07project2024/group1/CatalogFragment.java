@@ -60,9 +60,6 @@ public class CatalogFragment extends Fragment {
         catalogItemAdapter = new CatalogItemAdapter();
         recyclerView.setAdapter(catalogItemAdapter);
 
-        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-
-
         initCatalogPageObserver();
         initScrollListener();
         initSelectionTracker();

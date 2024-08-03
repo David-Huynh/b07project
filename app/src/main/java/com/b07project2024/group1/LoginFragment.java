@@ -24,7 +24,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new Presenter(this, new Model());
+        presenter = new Presenter(this, AuthManager.getInstance());
     }
 
     @Override
@@ -59,5 +59,10 @@ public class LoginFragment extends Fragment {
 
         User user = new User(inputUser, inputPass);
         presenter.checkInput(user);
+    }
+
+    public void closeFragmentOnLogin() {
+        assert getActivity() != null;
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 }

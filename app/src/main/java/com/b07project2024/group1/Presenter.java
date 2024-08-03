@@ -7,10 +7,9 @@ import com.google.firebase.auth.AuthResult;
 
 public class Presenter implements ViewMessages{
     private LoginFragment view;
-    private Model model;
-    private AuthManager authManager;
+    public AuthManager model;
 
-    public Presenter(LoginFragment view, Model model) {
+    public Presenter(LoginFragment view, AuthManager model) {
         this.view = view;
         this.model = model;
     }
@@ -25,8 +24,10 @@ public class Presenter implements ViewMessages{
 
     public void signIn(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
+            model.login();
+            model.getLoginStatus();
             view.displayAlert(success);
-            authManager.login();
+            view.closeFragmentOnLogin();
         } else {
             view.displayAlert(failure);
         }
