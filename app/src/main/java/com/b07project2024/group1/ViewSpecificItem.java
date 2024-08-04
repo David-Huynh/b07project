@@ -14,9 +14,9 @@ public class ViewSpecificItem extends AppCompatActivity {
 
         Item item = getIntent().getParcelableExtra("item");
 
-        TextView itemTitleView = findViewById(R.id.textViewTitle);
-        TextView itemAuthorView = findViewById(R.id.textViewAuthor);
-        TextView itemGenreView = findViewById(R.id.textViewGenre);
+        TextView itemTitleView = findViewById(R.id.textViewName);
+        TextView itemAuthorView = findViewById(R.id.textViewLot);
+        TextView itemGenreView = findViewById(R.id.textViewCategory);
         TextView itemDescriptionView = findViewById(R.id.textViewDescription);
 
         assert item != null;

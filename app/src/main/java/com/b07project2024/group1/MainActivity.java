@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.os.Parcelable;
 import android.view.View;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -29,15 +31,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void viewItem(View view){
-        String id = "id";
-        String title = "title";
-        String author = "author";
-        String genre = "genre";
+        String lot = "10";
+        String name = "title";
+        String category = "author";
+        String period = "genre";
         String description = "description";
-        Item item = new Item(id, title, author, genre, description);
+        String pictureURL = "description";
+        CatalogItem item = new CatalogItem(lot, name, category, period, description, pictureURL);
         Intent i = new Intent(this, ViewSpecificItem.class);
-        String name = "item";
-        i.putExtra(name, item);
+        String PE_name = "item";
+        i.putExtra(PE_name, (Parcelable) item);
         startActivity(i);
     }
 
