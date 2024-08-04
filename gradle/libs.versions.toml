@@ -18,6 +18,7 @@ firebaseDatabase = "21.0.0"
 recyclerviewSelection = "1.1.0"
 recyclerviewVersion = "-selection"
 robolectric = "4.13"
+firebaseStorage = "21.0.0"
 
 [libraries]
 androidx-core = { module = "androidx.test:core" }
@@ -51,6 +52,7 @@ picasso = { module = "com.squareup.picasso:picasso" }
 recyclerview-selection = { module = "androidx.recyclerview:recyclerview-selection", version.ref = "recyclerviewSelection" }
 robolectric = { module = "org.robolectric:robolectric" }
 robolectric-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
