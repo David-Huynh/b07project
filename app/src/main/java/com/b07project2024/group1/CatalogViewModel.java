@@ -37,7 +37,9 @@ public class CatalogViewModel extends ViewModel{
      * @return LiveData list
      */
     public LiveData<List<CatalogItem>> getInitialCatalogPage() {
-        repository.getCatalogPage(liveList);
+        if (filter.getValue() != null)
+            repository.getCatalogPageByItem(filter.getValue(), liveList);
+        else repository.getCatalogPage(liveList);
         return liveList;
     }
 
@@ -50,18 +52,6 @@ public class CatalogViewModel extends ViewModel{
         if (liveList.getValue() != null && !liveList.getValue().isEmpty())
             setLastKey(String.valueOf(liveList.getValue().get(liveList.getValue().size() - 1).getLot()));
         repository.getNextCatalogPage(String.valueOf(Integer.parseInt(getLastKey()) + 1), liveList);
-    }
-
-    // Search is implemented here as opposed to a different ViewModel to have a single source
-    // of information for CatalogFragment
-    /**
-     * Modifies liveData according to search to be observed by the attached Fragment/View
-     * Supports search through an CatalogItem parameter
-     * @param filter the incomplete CatalogItem filter
-     */
-    public void getCatalogPageBySearch(CatalogItem filter) {
-        setFilter(filter);
-        repository.getCatalogPageByItem(filter, liveList);
     }
 
     public void clearSearch (){
