@@ -85,8 +85,9 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
                 params.width = 300;
                 params.height = 300;
                 imageViewPreview.setLayoutParams(params);
-                Glide.with(imageViewPreview).load(item.getPictureURL()).centerCrop().into(imageViewPreview);
-            }
+                if(item.getImageURLs() != null) {
+                    Glide.with(imageViewPreview).load(item.getImageURLs().get(0)).centerCrop().into(imageViewPreview);
+                }            }
         }
 
         /**
