@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-public class Presenter implements ViewMessages{
+public class Presenter {
     private LoginFragment view;
     public AuthManager model;
 
@@ -16,7 +16,7 @@ public class Presenter implements ViewMessages{
 
     public void checkInput(User user) {
         if (user.getUser().isEmpty() || user.getPass().isEmpty()) {
-            view.displayAlert(incomplete);
+            view.displayAlert("Please fill in all fields");
         } else {
             model.checkDB(user, this);
         }
@@ -26,10 +26,10 @@ public class Presenter implements ViewMessages{
         if (task.isSuccessful()) {
             model.login();
             model.getLoginStatus();
-            view.displayAlert(success);
+            view.displayAlert("Login Successful");
             view.closeFragmentOnLogin();
         } else {
-            view.displayAlert(failure);
+            view.displayAlert("Login Failed");
         }
     }
 }
