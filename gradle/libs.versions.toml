@@ -19,6 +19,7 @@ recyclerviewSelection = "1.1.0"
 recyclerviewVersion = "-selection"
 firebaseStorage = "21.0.0"
 robolectric = "4.13"
+firebaseStorage = "21.0.0"
 
 [libraries]
 androidx-core = { module = "androidx.test:core" }
