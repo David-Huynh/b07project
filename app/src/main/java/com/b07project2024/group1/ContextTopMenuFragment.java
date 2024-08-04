@@ -96,7 +96,7 @@ public class ContextTopMenuFragment extends Fragment {
 
         if (item.getItemId() == R.id.search) {
             if (!isSearched) {
-                transaction.replace(R.id.fragment_container, new CatalogFragment());
+                transaction.replace(R.id.fragment_container, new SearchCatalogFragment());
                 transaction.addToBackStack("Search");
             }
         } else if (item.getItemId() == R.id.user) {
