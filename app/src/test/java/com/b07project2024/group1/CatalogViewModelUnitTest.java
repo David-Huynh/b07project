@@ -140,7 +140,7 @@ public class CatalogViewModelUnitTest {
     }
 
     @Test
-    public void catalogViewModel_getCatalogBySearch(){
+    public void catalogViewModel_getInitialPage_withFilter(){
         // Setup ArgumentCaptor
         ArgumentCaptor<List<CatalogItem>> captor = ArgumentCaptor.forClass(List.class);
         CatalogItem item = new CatalogItem();
@@ -152,8 +152,8 @@ public class CatalogViewModelUnitTest {
             liveItems.postValue(items);
             return null;
         }).when(mockRepo).getCatalogPageByItem(any(),any());
-
-        viewModel.getCatalogPageBySearch(item);
+        viewModel.setFilter(item);
+        viewModel.getInitialCatalogPage();
         // Verify the result
         verify(observer, times(1)).onChanged(captor.capture());
         List<CatalogItem> capturedList = captor.getValue();
