@@ -33,72 +33,23 @@ public class CatalogItem {
 
     }
 
-
     // Getters and setters
-    public String getLot() {
-        return lot;
-    }
-
-    public void setLot(String lot) {
-        this.lot = lot;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(String period) {
-        this.period = period;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<String> getImageURLs() {
-        return imageURLs;
-    }
-
-    public void setImageURLs(List<String> pics) {
-        this.imageURLs = pics;
-    }
-
-    public void addImageURLs(String pic) {
-        this.imageURLs.add(pic);
-    }
-
-    public List<String> getVideoURLs() {
-        return videoURLs;
-    }
-
-    public void setVideoURLs(List<String> vids) {
-        this.videoURLs = vids;
-    }
-
-    public void addVideoURLs(String vid) {
-        this.videoURLs.add(vid);
-    }
-
+    public String getLot() {return lot;}
+    public void setLot(String lot) {this.lot = lot;}
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+    public String getCategory() {return category;}
+    public void setCategory(String category) {this.category = category;}
+    public String getPeriod() {return period;}
+    public void setPeriod(String period) {this.period = period;}
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
+    public List<String> getImageURLs() {return imageURLs;}
+    public void setImageURLs(List<String> pics) {this.imageURLs = pics;}
+    public void addImageURLs(String pic) {this.imageURLs.add(pic);}
+    public List<String> getVideoURLs() {return videoURLs;}
+    public void setVideoURLs(List<String> vids) {this.videoURLs = vids;}
+    public void addVideoURLs(String vid) {this.videoURLs.add(vid);}
 
     /**
      * Checks if two CatalogItem instances are equal in lot number and content
