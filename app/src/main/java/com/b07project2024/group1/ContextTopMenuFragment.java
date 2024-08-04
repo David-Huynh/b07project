@@ -1,34 +1,31 @@
 package com.b07project2024.group1;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
     private LoginViewModel loginViewModel;
     private CatalogSelectionViewModel selectionViewModel;
     private CatalogViewModel catalogViewModel;
-    private Integer lastNavID;
+
     private boolean isSearched;
     private boolean isSelected;
     private boolean isAuthed;
 
-    private DeleteItem delete;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,17 +55,17 @@ public class ContextTopMenuFragment extends Fragment {
         return view;
     }
 
+
     /**
      * Sets the Navigation icon to a back arrow or nothing based off stack count
      * @param appBar navigation icon
      */
-    private void setNavigationIcon(MaterialToolbar appBar){
-        if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+    private void setNavigationIcon(MaterialToolbar appBar) {
+        int backStackCount = requireActivity().getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackCount <= 1) {
             appBar.setNavigationIcon(null);
-            lastNavID = null;
         }else {
             appBar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
-            lastNavID = R.drawable.ic_arrow_back_24dp;
         }
     }
 
@@ -80,75 +77,41 @@ public class ContextTopMenuFragment extends Fragment {
         if (isSelected) {
             selectionViewModel.clearSelectedItems();
             appBar.setNavigationIcon(null);
-            lastNavID = null;
         } else {
             requireActivity().getSupportFragmentManager().popBackStack();
         }
     }
-     /**
+
+    /**
      * Navigates users to the correct fragment based of the view clicked
      * @param item the item clicked by the user
      * @return true if successfully found the item
      */
     private boolean onMenuClick (MenuItem item){
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-
-        if (item.getItemId() == R.id.search) {
+        int itemId = item.getItemId();
+        //TODO: REPLACE R.id.fragment_container with the actual corresponding fragment
+        if (itemId == R.id.search) {
             if (!isSearched) {
                 transaction.replace(R.id.fragment_container, new CatalogFragment());
                 transaction.addToBackStack("Search");
             }
-        } else if (item.getItemId() == R.id.user) {
+        } else if (itemId == R.id.user) {
             if (isAuthed) {
                 loginViewModel.logout();
             } else {
                 transaction.replace(R.id.fragment_container, new CatalogFragment());
                 transaction.addToBackStack("Login");
             }
-        } else if (item.getItemId() == R.id.add){
+        } else if (itemId == R.id.add){
             transaction.replace(R.id.fragment_container, new CatalogFragment());
             transaction.addToBackStack("Add");
-        } else if (item.getItemId() == R.id.report) {
+        } else if (itemId == R.id.report) {
             transaction.replace(R.id.fragment_container, new CatalogFragment());
             transaction.addToBackStack("Report");
-        } else if (item.getItemId() == R.id.delete) {
-            delete = new DeleteItem();
-            List<CatalogItem> d_selected = selectionViewModel.getSelectedItems().getValue();
-            selectionViewModel.clearSelectedItems();
-            if(d_selected == null){
-                Toast.makeText(getActivity(), "Please select an item", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            else if(d_selected != null){
-                // Pop-up to confirm delete
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Delete Item");
-                if(d_selected.size() == 1){
-                    alert.setMessage("Are you sure you want to delete this item? (Lot #" + d_selected.get(0).getLot() + ")");
-                }
-                else {
-                    alert.setMessage("Are you sure you want to delete these items?");
-                }
-                // Deleting selected items
-                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int k) {
-                        for(int i=0; i<d_selected.size(); i++) {
-                            if(d_selected.get(i) != null) {
-                                CatalogItem d_item = d_selected.get(i);
-                                delete.deleteItem(d_item.getLot());
-                            }
-                        }
-                        Toast.makeText(getContext(), "Item(s) deleted from catalog", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int k) {
-                        dialog.cancel();
-                    }
-                });
-                alert.show();
-            }
-            return true;
+        } else if (itemId == R.id.delete) {
+            transaction.replace(R.id.fragment_container, new CatalogFragment());
+            transaction.addToBackStack("Delete");
         } else {
             return false;
         }
@@ -192,25 +155,25 @@ public class ContextTopMenuFragment extends Fragment {
         }
     }
 
-     /**
+    /**
      * Sets the visibility of the navigation icons based off whether isVisible is true
      * @param user user's login/logout icon
      * @param add add catalog item icon
      * @param report generate report icon
      * @param delete delete item icon
-     * @param isVisible the state of whether they are authed
+     * @param isAuthed the state of whether they are authed
      */
-    private void setVisibility(MenuItem user, MenuItem add, MenuItem report, MenuItem delete, Boolean isVisible) {
-        isAuthed = isVisible;
+    private void setVisibility(MenuItem user, MenuItem add, MenuItem report, MenuItem delete, Boolean isAuthed) {
+        this.isAuthed = isAuthed;
         if (user != null) {
-            if (isVisible) {
+            if (isAuthed) {
                 user.setIcon(R.drawable.ic_logout_24dp);
             } else {
                 user.setIcon(R.drawable.ic_person_24dp);
             }
         }
-        if (add != null) add.setVisible(isVisible);
-        if (report != null) report.setVisible(isVisible);
-        if (delete != null) delete.setVisible(isVisible);
+        if (add != null) add.setVisible(isAuthed);
+        if (report != null) report.setVisible(isAuthed);
+        if (delete != null) delete.setVisible(isAuthed);
     }
 }
