@@ -1,15 +1,25 @@
 package com.b07project2024.group1;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import javax.annotation.Nullable;
+import dagger.hilt.android.AndroidEntryPoint;
 
-public class ViewSpecificItem extends AppCompatActivity {
+@AndroidEntryPoint
+public class ViewSpecificItem extends Fragment {
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_specfiic_item);
+    public View onCreateView(@NonNull LayoutInflater inflater, @androidx.annotation.Nullable ViewGroup container, @androidx.annotation.Nullable Bundle savedInstanceState){
+//       super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.view_specfiic_item, container, false);
+
 
 
         Item item = getIntent().getParcelableExtra("item");
