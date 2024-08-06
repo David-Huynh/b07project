@@ -17,7 +17,6 @@ import java.io.Serializable;
  * create an instance of this fragment.
  */
 public class ViewItem extends Fragment {
-
     private static final String ARG_ITEM = "item";
     private CatalogItem item;
 
@@ -47,7 +46,6 @@ public class ViewItem extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_item, container, false);
 
         TextView itemNameView = view.findViewById(R.id.textViewName);
@@ -56,16 +54,14 @@ public class ViewItem extends Fragment {
         TextView itemPeriodView = view.findViewById(R.id.textViewPeriod);
         TextView itemDescriptionView = view.findViewById(R.id.textViewDescription);
         // add images
-        // add fragment outline to catalog xml
-        // hook up on click to catalog item button
 
-
-        assert item != null;
-        itemNameView.setText(item.getName());
-        itemLotView.setText(item.getLot());
-        itemCategoryView.setText(item.getCategory());
-        itemPeriodView.setText(item.getPeriod());
-        itemDescriptionView.setText(item.getDescription());
+        if (item != null) {
+            itemNameView.setText(item.getName());
+            itemLotView.setText(item.getLot());
+            itemCategoryView.setText(item.getCategory());
+            itemPeriodView.setText(item.getPeriod());
+            itemDescriptionView.setText(item.getDescription());
+        }
 
         return view;
     }

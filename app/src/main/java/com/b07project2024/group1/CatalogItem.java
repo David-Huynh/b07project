@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ import java.util.Objects;
 /**
  * The CatalogItem class is POJO that represents an item in the TAAM collection
  */
-public class CatalogItem {
+public class CatalogItem implements Serializable {
     private String lot;
     private String name;
     private String category;
