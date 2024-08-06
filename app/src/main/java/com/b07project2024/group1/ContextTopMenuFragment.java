@@ -17,7 +17,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
@@ -96,7 +101,7 @@ public class ContextTopMenuFragment extends Fragment {
 
         if (item.getItemId() == R.id.search) {
             if (!isSearched) {
-                transaction.replace(R.id.fragment_container, new CatalogFragment());
+                transaction.replace(R.id.fragment_container, new SearchCatalogFragment());
                 transaction.addToBackStack("Search");
             }
         } else if (item.getItemId() == R.id.user) {
@@ -110,8 +115,12 @@ public class ContextTopMenuFragment extends Fragment {
             transaction.replace(R.id.fragment_container, new CatalogFragment());
             transaction.addToBackStack("Add");
         } else if (item.getItemId() == R.id.report) {
-            transaction.replace(R.id.fragment_container, new CatalogFragment());
+
+
+            transaction.replace(R.id.fragment_container, new ReportFragment());
             transaction.addToBackStack("Report");
+
+
         } else if (item.getItemId() == R.id.delete) {
             delete = new DeleteItem();
             List<CatalogItem> d_selected = selectionViewModel.getSelectedItems().getValue();

@@ -39,4 +39,14 @@
     </string>
     <string name="content_description_report">Navigates to a page to generate a report about catalog items</string>
     <string name="content_description_delete">Deletes the selected catalog items</string>
+
+    <string name="generate_report">Generate Report</string>
+    <string name="generate_report_lot">Generate report by Lot number:</string>
+    <string name="generate_report_name">Generate report by Name:</string>
+    <string name="generate_report_cat">Generate report by Category:</string>
+    <string name="generate_report_cat_dp">Generate report by Category with\nDescription and Picture only:</string>
+    <string name="generate_report_per">Generate report by Period:</string>
+    <string name="generate_report_per_dp">Generate report by Period with Description and Picture only:</string>
+    <string name="generate_report_all">Generate report for all items:</string>
+    <string name="generate_report_all_dp">Generate report for all items with Description and Picture only:</string>
 </resources>
