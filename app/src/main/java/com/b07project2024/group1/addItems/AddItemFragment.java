@@ -84,8 +84,8 @@ public class AddItemFragment extends Fragment {
     }
 
     private void setupFirebase() {
-        db = FirebaseDatabase.getInstance("https://scrum-7-default-rtdb.firebaseio.com/");
-        storage = FirebaseStorage.getInstance("gs://scrum-7.appspot.com");
+        db = FirebaseDatabase.getInstance("https://b07projectgroup1-default-rtdb.firebaseio.com/");
+        storage = FirebaseStorage.getInstance("gs://b07projectgroup1.appspot.com");
     }
 
     private void setupSpinners() {
