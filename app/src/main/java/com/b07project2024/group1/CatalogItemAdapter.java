@@ -4,10 +4,12 @@ import android.graphics.drawable.PictureDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.DiffUtil;
@@ -120,6 +122,22 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
     @Override
     public CatalogItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.catalog_item_layout, parent, false);
+
+//        Button buttonView = view.findViewById(R.id.buttonView);
+//        buttonView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, ExampleFragment.class, null)
+//                        .setReorderingAllowed(true)
+//                        .addToBackStack("name") // Name can be null
+//                        .commit();
+//            }
+//        });
+
+
+
         return new CatalogItemAdapter.ViewHolder(view);
     }
 

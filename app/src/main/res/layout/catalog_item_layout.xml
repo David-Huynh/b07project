@@ -6,6 +6,16 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerViewItem"
+        android:name="com.b07project2024.group1.ViewItem"
+        android:layout_width="412dp"
+        android:layout_height="732dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewLot"
         android:layout_width="0dp"
@@ -74,7 +84,7 @@
         app:srcCompat="@drawable/ic_launcher_foreground" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonView"
         android:layout_width="393dp"
         android:layout_height="58dp"
         android:layout_marginTop="8dp"

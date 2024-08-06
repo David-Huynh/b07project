@@ -32,18 +32,4 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-//    public void viewItem(View view){
-//        String lot = "10";
-//        String name = "title";
-//        String category = "author";
-//        String period = "genre";
-//        String description = "description";
-//        String pictureURL = "description";
-//        CatalogItem item = new CatalogItem(lot, name, category, period, description, pictureURL);
-//        Intent i = new Intent(this, ViewSpecificItem.class);
-//        String PE_name = "item";
-//        i.putExtra(PE_name, (Parcelable) item);
-//        startActivity(i);
-//    }
-
 }

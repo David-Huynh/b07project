@@ -107,36 +107,5 @@ public class CatalogItem {
             return this.getPeriod().equals(item.getPeriod());
         return true;
     }
-
-    // Make Item parcelable for use in Intent
-    public CatalogItem(Parcel in){
-        String[] info = new String[6];
-
-        in.readStringArray(info);
-        this.lot = info[0];
-        this.name = info[1];
-        this.category = info[2];
-        this.description = info[3];
-        this.period = info[4];
-        this.pictureURL = info[5];
-    }
-
-    public int describeContents() {
-        return 0;
-    }
-
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeStringArray(new String[] {this.lot, this.name, this.category, this.description, this.period, this.pictureURL});
-    }
-
-    public static final Parcelable.Creator<CatalogItem> CREATOR
-            = new Parcelable.Creator<CatalogItem>() {
-        public CatalogItem createFromParcel(Parcel in) {
-            return new CatalogItem(in);
-        }
-
-        public CatalogItem[] newArray(int size) {
-            return new CatalogItem[size];
-        }
-    };
+    
 }
