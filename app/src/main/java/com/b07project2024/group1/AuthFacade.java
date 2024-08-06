@@ -3,31 +3,27 @@ package com.b07project2024.group1;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import javax.inject.Inject;
-
-public class AuthManager implements MVPContract.AuthManager {
-
+public class AuthFacade implements MVPContract.AuthManager {
     private boolean isLoggedIn;
     private final MutableLiveData<Boolean> loginStatus;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private static AuthManager instance;
+    private final FirebaseAuth mAuth;
+    private static AuthFacade instance;
 
-    @Inject
-    public AuthManager() {
+    private AuthFacade() {
         this.isLoggedIn = false;
         this.loginStatus = new MutableLiveData<>();
+        this.mAuth = FirebaseAuth.getInstance();
     }
 
-    public static AuthManager getInstance() {
+    public static AuthFacade getInstance() {
         if (instance == null) {
-            instance = new AuthManager();
+            instance = new AuthFacade();
         }
         return instance;
     }

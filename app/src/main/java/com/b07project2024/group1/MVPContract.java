@@ -6,20 +6,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
 public interface MVPContract {
-    public interface AuthManager {
-        public void checkDB(User user, Presenter presenter);
-        public LiveData<Boolean> getLoginStatus();
-        public void login();
-        public void logout();
+    interface AuthManager {
+        void checkDB(User user, Presenter presenter);
+        LiveData<Boolean> getLoginStatus();
+        void login();
+        void logout();
     }
 
-    public interface Presenter {
-        public void checkInput(User user);
-        public void signIn(Task<AuthResult> task);
+    interface Presenter {
+        void checkInput(User user);
+        void signIn(Task<AuthResult> task);
     }
 
-    public interface LoginFragment {
-        public void displayAlert(String message);
-        public void closeFragmentOnLogin();
+    interface LoginFragment {
+        void displayAlert(String message);
+        void closeFragmentOnLogin();
     }
 }

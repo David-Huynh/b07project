@@ -21,10 +21,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.List;
 
 public class ContextTopMenuFragment extends Fragment {
-    private AuthManager authManager;
+    private AuthFacade authFacade;
     private CatalogSelectionViewModel selectionViewModel;
     private CatalogViewModel catalogViewModel;
-    private Integer lastNavID;
     private boolean isSearched;
     private boolean isSelected;
     private boolean isAuthed;
@@ -51,12 +50,12 @@ public class ContextTopMenuFragment extends Fragment {
         setNavigationIcon(appBar);
         requireActivity().getSupportFragmentManager().addOnBackStackChangedListener(() -> setNavigationIcon(appBar));
 
-        authManager = AuthManager.getInstance();
+        authFacade = AuthFacade.getInstance();
         selectionViewModel = new ViewModelProvider(requireActivity()).get(CatalogSelectionViewModel.class);
         catalogViewModel = new ViewModelProvider(requireActivity()).get(CatalogViewModel.class);
 
         selectionViewModel.getSelectedItems().observe(getViewLifecycleOwner(), items -> setSelected(appBar, items));
-        authManager.getLoginStatus().observe(getViewLifecycleOwner(),
+        authFacade.getLoginStatus().observe(getViewLifecycleOwner(),
                 status -> setVisibility(login, add, report, delete, status));
         catalogViewModel.getFilterLive().observe(getViewLifecycleOwner(), searched -> setSearched(search, searched));
         return view;
@@ -72,7 +71,6 @@ public class ContextTopMenuFragment extends Fragment {
             appBar.setNavigationIcon(null);
         } else {
             appBar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
-            lastNavID = R.drawable.ic_arrow_back_24dp;
         }
     }
 
@@ -85,7 +83,6 @@ public class ContextTopMenuFragment extends Fragment {
         if (isSelected) {
             selectionViewModel.clearSelectedItems();
             appBar.setNavigationIcon(null);
-            lastNavID = null;
         } else {
             requireActivity().getSupportFragmentManager().popBackStack();
         }
@@ -107,7 +104,7 @@ public class ContextTopMenuFragment extends Fragment {
             }
         } else if (item.getItemId() == R.id.user) {
             if (isAuthed) {
-                LogOut.logOut(authManager);
+                LogOut.logOut(authFacade);
             } else {
                 transaction.replace(R.id.fragment_container, new LoginFragment());
                 transaction.addToBackStack("Login");
@@ -125,33 +122,9 @@ public class ContextTopMenuFragment extends Fragment {
             if (d_selected == null) {
                 Toast.makeText(getActivity(), "Please select an item", Toast.LENGTH_SHORT).show();
                 return true;
-            } else if (d_selected != null) {
+            } else {
                 // Pop-up to confirm delete
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Delete Item");
-                if (d_selected.size() == 1) {
-                    alert.setMessage(
-                            "Are you sure you want to delete this item? (Lot #" + d_selected.get(0).getLot() + ")");
-                } else {
-                    alert.setMessage("Are you sure you want to delete these items?");
-                }
-                // Deleting selected items
-                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int k) {
-                        for (int i = 0; i < d_selected.size(); i++) {
-                            if (d_selected.get(i) != null) {
-                                CatalogItem d_item = d_selected.get(i);
-                                delete.deleteItem(d_item.getLot());
-                            }
-                        }
-                        Toast.makeText(getContext(), "Item(s) deleted from catalog", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int k) {
-                        dialog.cancel();
-                    }
-                });
+                AlertDialog.Builder alert = getBuilder(d_selected);
                 alert.show();
             }
             return true;
@@ -162,6 +135,35 @@ public class ContextTopMenuFragment extends Fragment {
         catalogViewModel.clearSearch();
         transaction.commit();
         return true;
+    }
+
+    private AlertDialog.Builder getBuilder(List<CatalogItem> d_selected) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Delete Item");
+        if (d_selected.size() == 1) {
+            alert.setMessage(
+                    "Are you sure you want to delete this item? (Lot #" + d_selected.get(0).getLot() + ")");
+        } else {
+            alert.setMessage("Are you sure you want to delete these items?");
+        }
+        // Deleting selected items
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int k) {
+                for (int i = 0; i < d_selected.size(); i++) {
+                    if (d_selected.get(i) != null) {
+                        CatalogItem d_item = d_selected.get(i);
+                        delete.deleteItem(d_item.getLot());
+                    }
+                }
+                Toast.makeText(getContext(), "Item(s) deleted from catalog", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int k) {
+                dialog.cancel();
+            }
+        });
+        return alert;
     }
 
     /**

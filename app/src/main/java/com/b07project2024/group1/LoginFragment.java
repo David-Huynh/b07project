@@ -14,17 +14,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Objects;
-
-import javax.inject.Inject;
-
 public class LoginFragment extends Fragment implements MVPContract.LoginFragment {
     private MVPContract.Presenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new Presenter(this, AuthManager.getInstance());
+        presenter = new LoginPresenter(this, AuthFacade.getInstance());
     }
 
     @Override

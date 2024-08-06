@@ -14,13 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PresenterTest {
+public class LoginPresenterTest {
 
     @Mock
     LoginFragment view;
 
     @Mock
-    AuthManager model;
+    AuthFacade model;
 
     @Mock
     User user;
@@ -32,8 +32,8 @@ public class PresenterTest {
     public void testIncompletePass() {
         when(user.getUser()).thenReturn("hello");
         when(user.getPass()).thenReturn("");
-        Presenter presenter = new Presenter(view, model);
-        presenter.checkInput(user);
+        LoginPresenter loginPresenter = new LoginPresenter(view, model);
+        loginPresenter.checkInput(user);
         verify(view).displayAlert("Please fill in all fields");
     }
 
@@ -41,16 +41,16 @@ public class PresenterTest {
     public void testCompleteLogin() {
         when(user.getUser()).thenReturn("hello");
         when(user.getPass()).thenReturn("world");
-        Presenter presenter = new Presenter(view, model);
-        presenter.checkInput(user);
-        verify(model).checkDB(user, presenter);
+        LoginPresenter loginPresenter = new LoginPresenter(view, model);
+        loginPresenter.checkInput(user);
+        verify(model).checkDB(user, loginPresenter);
     }
 
     @Test
     public void testCorrectLogin() {
         when(task.isSuccessful()).thenReturn(true);
-        Presenter presenter = new Presenter(view, model);
-        presenter.signIn(task);
+        LoginPresenter loginPresenter = new LoginPresenter(view, model);
+        loginPresenter.signIn(task);
         InOrder inOrder = inOrder(model, view);
         inOrder.verify(model).login();
         inOrder.verify(model).getLoginStatus();
@@ -61,8 +61,8 @@ public class PresenterTest {
     @Test
     public void testIncorrectLogin() {
         when(task.isSuccessful()).thenReturn(false);
-        Presenter presenter = new Presenter(view, model);
-        presenter.signIn(task);
+        LoginPresenter loginPresenter = new LoginPresenter(view, model);
+        loginPresenter.signIn(task);
         verify(view).displayAlert("Login Failed");
     }
 }

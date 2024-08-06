@@ -5,11 +5,11 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-public class Presenter implements MVPContract.Presenter{
+public class LoginPresenter implements MVPContract.Presenter{
     private final MVPContract.LoginFragment view;
     private MVPContract.AuthManager model;
 
-    public Presenter(MVPContract.LoginFragment view, MVPContract.AuthManager model) {
+    public LoginPresenter(MVPContract.LoginFragment view, MVPContract.AuthManager model) {
         this.view = view;
         this.model = model;
     }
