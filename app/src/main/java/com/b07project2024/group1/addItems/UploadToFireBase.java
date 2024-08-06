@@ -119,7 +119,7 @@ public class UploadToFireBase {
         String period = spinnerPeriod.getSelectedItem().toString();
         String description = editTextDescription.getText().toString().trim();
 
-        DatabaseReference catalogItemsRef = db.getReference("catalog_items");
+        DatabaseReference catalogItemsRef = db.getReference("catalog");
 
         // Create a HashMap to represent the item
         Map<String, Object> item = new HashMap<>();

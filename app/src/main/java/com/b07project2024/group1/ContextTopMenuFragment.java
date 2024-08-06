@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.b07project2024.group1.addItems.AddItemFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.List;
@@ -107,7 +108,7 @@ public class ContextTopMenuFragment extends Fragment {
                 transaction.addToBackStack("Login");
             }
         } else if (item.getItemId() == R.id.add){
-            transaction.replace(R.id.fragment_container, new CatalogFragment());
+            transaction.replace(R.id.fragment_container, new AddItemFragment());
             transaction.addToBackStack("Add");
         } else if (item.getItemId() == R.id.report) {
             transaction.replace(R.id.fragment_container, new CatalogFragment());
