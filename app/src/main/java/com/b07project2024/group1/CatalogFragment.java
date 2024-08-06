@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class CatalogFragment extends Fragment {
     private CatalogViewModel catalogViewModel;
     private CatalogSelectionViewModel selectionViewModel;
-    private LoginViewModel loginViewModel;
 
     private LinearLayoutManager layoutManager;
 
@@ -58,9 +57,6 @@ public class CatalogFragment extends Fragment {
 
         catalogItemAdapter = new CatalogItemAdapter();
         recyclerView.setAdapter(catalogItemAdapter);
-
-        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-
 
         initCatalogPageObserver();
         initScrollListener();

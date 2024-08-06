@@ -46,9 +46,12 @@ dependencies {
     implementation(libs.activity)
     implementation (libs.androidx.fragment)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.database)
     implementation(libs.glide)
+    //Firebase
+    implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)
+    //Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -56,11 +59,8 @@ dependencies {
     testImplementation(libs.robolectric.robolectric)
     // ViewModel
     implementation(libs.lifecycle.viewmodel)
-    // LiveData
     implementation(libs.lifecycle.livedata)
-    // Lifecycles only (without ViewModel or LiveData)
     implementation(libs.lifecycle.runtime)
-    // Saved state module for ViewModel
     implementation(libs.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.lifecycle.common.java8)
     // ReactiveStreams support for LiveData

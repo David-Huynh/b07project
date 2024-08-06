@@ -19,11 +19,9 @@ import java.util.List;
  */
 public class DeleteItem {
     private FirebaseDatabase db;
-    private FirebaseStorage storage;
 
     public DeleteItem(){
-        db = FirebaseDatabase.getInstance("https://b07projectgroup1-default-rtdb.firebaseio.com/");
-        storage = FirebaseStorage.getInstance("gs://b07projectgroup1.appspot.com");
+        db = FirebaseDatabase.getInstance();
     }
 
     /**
@@ -38,7 +36,7 @@ public class DeleteItem {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     CatalogItem item = child.getValue(CatalogItem.class);
-                    if (item.getLot().equals(lot)) {
+                    if (item != null && item.getLot().equals(lot)) {
                         // Delete item and related images/videos from catalog
                         deleteFiles(item.getImageURLs());
                         deleteFiles(item.getVideoURLs());
@@ -59,7 +57,7 @@ public class DeleteItem {
      * @param pics List of strings containing links of files to iterate through and delete
      */
     private void deleteFiles(List<String> pics){
-        FirebaseStorage storage = FirebaseStorage.getInstance("gs://b07projectgroup1.appspot.com");
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         if(pics == null || pics.isEmpty()){
             return;
         }

@@ -39,4 +39,5 @@
     </string>
     <string name="content_description_report">Navigates to a page to generate a report about catalog items</string>
     <string name="content_description_delete">Deletes the selected catalog items</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
