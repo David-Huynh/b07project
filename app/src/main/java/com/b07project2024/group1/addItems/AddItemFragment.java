@@ -138,7 +138,6 @@ public class AddItemFragment extends Fragment {
         if (!validateInput()) return;
 
         uploadToFireBase.uploadMediaFiles();
-        Toast.makeText(getContext(), "Items with same lot number will replaced by the latest", Toast.LENGTH_SHORT).show();
     }
 
     private boolean isValidInteger(String lotStr){
