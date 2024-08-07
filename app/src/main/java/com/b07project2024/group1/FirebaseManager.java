@@ -10,7 +10,7 @@ public class FirebaseManager {
     private final FirebaseDatabase database;
 
     private FirebaseManager () {
-        FirebaseDatabase fd = FirebaseDatabase.getInstance("https://b07project-group1-default-rtdb.firebaseio.com/");
+        FirebaseDatabase fd = FirebaseDatabase.getInstance();
         fd.setPersistenceEnabled(true);
         fd.setLogLevel(Logger.Level.DEBUG);
         reference = fd.getReference();
