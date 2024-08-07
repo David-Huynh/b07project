@@ -1,6 +1,5 @@
 package com.b07project2024.group1;
 
-import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class CatalogFragment extends Fragment implements CatalogFragmentCallbackInterface {
     private CatalogViewModel catalogViewModel;
     private CatalogSelectionViewModel selectionViewModel;
-//    private LoginViewModel loginViewModel;
     private CatalogItemViewModel catalogItemViewModel;
 
     private LinearLayoutManager layoutManager;
@@ -62,9 +60,6 @@ public class CatalogFragment extends Fragment implements CatalogFragmentCallback
 
         catalogItemAdapter = new CatalogItemAdapter(this);
         recyclerView.setAdapter(catalogItemAdapter);
-
-//        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-
 
         initCatalogPageObserver();
         initScrollListener();

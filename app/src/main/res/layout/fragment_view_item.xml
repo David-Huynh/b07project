@@ -53,22 +53,20 @@
 
         <TextView
             android:id="@+id/textViewDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_width="285dp"
+            android:layout_height="54dp"
             android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/imageViewItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPeriod"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewPeriod" />
 
         <ImageView
             android:id="@+id/imageViewItem"
-            android:layout_width="408dp"
-            android:layout_height="576dp"
+            android:layout_width="410dp"
+            android:layout_height="526dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.333"

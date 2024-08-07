@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * The CatalogItem class is POJO that represents an item in the TAAM collection
  */
-public class CatalogItem implements Serializable {
+public class CatalogItem {
     private String lot;
     private String name;
     private String category;

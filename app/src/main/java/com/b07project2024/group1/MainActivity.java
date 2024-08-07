@@ -1,18 +1,12 @@
 package com.b07project2024.group1;
 
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-
-
-import android.os.Parcelable;
-import android.view.View;
-
 import dagger.hilt.android.AndroidEntryPoint;
-import java.io.Serializable;
+
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
