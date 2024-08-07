@@ -1,11 +1,7 @@
 package com.b07project2024.group1;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
