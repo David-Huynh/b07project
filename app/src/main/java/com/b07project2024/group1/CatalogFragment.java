@@ -1,5 +1,6 @@
 package com.b07project2024.group1;
 
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.SelectionPredicates;
 import androidx.recyclerview.selection.SelectionTracker;
@@ -22,10 +24,11 @@ import dagger.hilt.android.AndroidEntryPoint;
  * allowing for infinite scrolling
  */
 @AndroidEntryPoint
-public class CatalogFragment extends Fragment {
+public class CatalogFragment extends Fragment implements CatalogFragmentCallbackInterface {
     private CatalogViewModel catalogViewModel;
     private CatalogSelectionViewModel selectionViewModel;
     private LoginViewModel loginViewModel;
+    private CatalogItemViewModel catalogItemViewModel;
 
     private LinearLayoutManager layoutManager;
 
@@ -55,8 +58,9 @@ public class CatalogFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
+        catalogItemViewModel = new ViewModelProvider(requireActivity()).get(CatalogItemViewModel.class);
 
-        catalogItemAdapter = new CatalogItemAdapter();
+        catalogItemAdapter = new CatalogItemAdapter(this);
         recyclerView.setAdapter(catalogItemAdapter);
 
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
@@ -128,5 +132,15 @@ public class CatalogFragment extends Fragment {
                 selectionViewModel.setSelectedItems(catalogItemAdapter.getCatalogList(), tracker.getSelection());
             }
         });
+    }
+
+    @Override
+    public void onClick(CatalogItem item) {
+        catalogItemViewModel.setItem(item);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, new ViewItem())
+                .addToBackStack(null) // maybe 'item'
+                .commit();
     }
 }

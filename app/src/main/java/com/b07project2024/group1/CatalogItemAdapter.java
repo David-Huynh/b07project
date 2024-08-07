@@ -1,18 +1,12 @@
 package com.b07project2024.group1;
 
-import android.content.Context;
-import android.graphics.drawable.PictureDrawable;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.DiffUtil;
@@ -20,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +23,11 @@ import java.util.List;
 public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.ViewHolder> {
     public final List<CatalogItem> catalogList;
     SelectionTracker<String> tracker;
-    public CatalogItemAdapter() {
+    CatalogFragmentCallbackInterface catalogFrag;
+    public CatalogItemAdapter(CatalogFragmentCallbackInterface catalogFrag) {
         setHasStableIds(true);
         catalogList = new ArrayList<>();
+        this.catalogFrag = catalogFrag;
     }
 
     /**
@@ -60,8 +55,6 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
         private final TextView textViewName, textViewLot, textViewCategory, textViewPeriod, textViewDescription;
         private final ImageView imageViewPreview;
 
-        // added view button on item
-        private Button buttonView;
 
         public ViewHolder(View view) {
             super(view);
@@ -71,8 +64,6 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
             textViewPeriod = itemView.findViewById(R.id.textViewPeriod);
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             imageViewPreview = itemView.findViewById(R.id.imageViewPreview);
-
-            buttonView = itemView.findViewById(R.id.buttonView);
         }
 
         /**
@@ -99,23 +90,6 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
                 if(item.getImageURLs() != null) {
                     Glide.with(imageViewPreview).load(item.getImageURLs().get(0)).centerCrop().into(imageViewPreview);
                 }            }
-
-            // view button on item
-            buttonView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("item", (Serializable) item);
-
-                    FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
-                    ViewItem viewItemFragment = new ViewItem();
-                    viewItemFragment.setArguments(bundle);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragmentContainerView, viewItemFragment)
-                            .addToBackStack(null) // maybe 'item'
-                            .commit();
-                }
-            });
         }
 
         /**
@@ -163,6 +137,7 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
         CatalogItem item = catalogList.get(position);
         boolean isSelected = tracker != null && tracker.isSelected(item.getLot());
         holder.bind(item, isSelected);
+        holder.itemView.setOnClickListener(v -> catalogFrag.onClick(item));
     }
 
     @Override
