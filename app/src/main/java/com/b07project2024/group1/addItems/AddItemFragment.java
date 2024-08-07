@@ -68,7 +68,7 @@ public class AddItemFragment extends Fragment {
         setupFirebase();
         setupSpinners();
         setupButtons();
-        
+
         return view;
     }
 
@@ -84,8 +84,8 @@ public class AddItemFragment extends Fragment {
     }
 
     private void setupFirebase() {
-        db = FirebaseDatabase.getInstance("https://b07projectgroup1-default-rtdb.firebaseio.com/");
-        storage = FirebaseStorage.getInstance("gs://b07projectgroup1.appspot.com");
+        db = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
     }
 
     private void setupSpinners() {
@@ -118,15 +118,12 @@ public class AddItemFragment extends Fragment {
     }
 
     private void submitCatalogItem(UploadToFireBase uploadToFireBase) {
-        if (!validateInput()) return;
-
 
         // Receive the data from photoViewModel
         photoFilesViewModel.getSelectedItem().observe(getViewLifecycleOwner(), mediaFiles -> {
             if (mediaFiles != null) {
                 selectedPhotoUris.clear();
                 selectedPhotoUris.addAll(mediaFiles);
-                Log.d("AddItemFragment", "selectedPhotoUris size: "+selectedPhotoUris.size());
             }
             });
 
@@ -135,24 +132,37 @@ public class AddItemFragment extends Fragment {
             if (mediaFiles != null) {
                 selectedVideoUris.clear();
                 selectedVideoUris.addAll(mediaFiles);
-                Log.d("AddItemFragment", "selectedVideoUris size: "+selectedVideoUris.size());
             }
         });
 
-
-
-        Log.d(TAG, "Submitting with " + selectedPhotoUris.size() + " images and " + selectedVideoUris.size() + " videos");
+        if (!validateInput()) return;
 
         uploadToFireBase.uploadMediaFiles();
+        Toast.makeText(getContext(), "Items with same lot number will replaced by the latest", Toast.LENGTH_SHORT).show();
+    }
 
+    private boolean isValidInteger(String lotStr){
+        try {
+            int lotNum = Integer.parseInt(lotStr);
+            return lotNum > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private boolean validateInput() {
-        if (editTextLotNumber.getText().toString().trim().isEmpty() ||
-                editTextName.getText().toString().trim().isEmpty() ||
+
+        String lotNumberText = editTextLotNumber.getText().toString().trim();
+
+        if (    editTextName.getText().toString().trim().isEmpty() ||
                 editTextDescription.getText().toString().trim().isEmpty()||
                 selectedPhotoUris.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields and upload at least 1 image", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        else if (lotNumberText.isEmpty() || !isValidInteger(lotNumberText)) {
+            Toast.makeText(getContext(), "Please enter a valid lot number", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

@@ -86,6 +86,14 @@ public class CatalogItem {
                     && description.equals(other.description)
                     && period.equals(other.period)
                     && videoURLs.equals(other.videoURLs);
+        } else if ((imageURLs != null && other.imageURLs != null) && (videoURLs != null && other.videoURLs != null)) {
+            return lot.equals(other.lot)
+                    && name.equals(other.name)
+                    && category.equals(other.category)
+                    && description.equals(other.description)
+                    && period.equals(other.period)
+                    && videoURLs.equals(other.videoURLs)
+                    && imageURLs.equals(other.imageURLs);
         }
 
         return lot.equals(other.lot)
