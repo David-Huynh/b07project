@@ -18,8 +18,8 @@ import androidx.fragment.app.Fragment;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class ReportFragment extends Fragment {
-    private ReportViewModel reportViewModel = new ReportViewModel();
+public class ReportFragment extends Fragment implements IReport.ReportFragment {
+    private IReport.ReportViewModel reportViewModel = new ReportViewModel();
     Button btn;
 
     @Nullable
@@ -71,6 +71,10 @@ public class ReportFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public void displayAlert(String alert) {
+        Toast.makeText(getActivity(), alert, Toast.LENGTH_SHORT).show();
     }
 }
 

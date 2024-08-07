@@ -1,5 +1,7 @@
 package com.b07project2024.group1;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -31,7 +33,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportViewModel extends ViewModel {
+public class ReportViewModel extends ViewModel implements IReport.ReportViewModel {
+    IReport.ReportFragment fragment = new ReportFragment();
     List<CatalogItem> catalog;
     int pageHeight = 1920;
     int pagewidth = 1080;
@@ -70,8 +73,7 @@ public class ReportViewModel extends ViewModel {
                 else if(type.equals("allDP")){item = generateAll(list, true);}
 
                 if(item == null){
-                    Log.d("error", "No items found in parameters");
-
+                    fragment.displayAlert("Error: No items found in parameters");
                 }
             }
 
@@ -103,10 +105,10 @@ public class ReportViewModel extends ViewModel {
             fos.close();
 
         } catch (FileNotFoundException e) {
-            Log.d("error", "error");
+            fragment.displayAlert("Error");
             throw new RuntimeException(e);
         } catch (IOException e) {
-            Log.d("error", "error");
+            fragment.displayAlert("Error");
             throw new RuntimeException(e);
         }
     }
@@ -193,7 +195,7 @@ public class ReportViewModel extends ViewModel {
                 return list.get(i);
             }
         }
-        Log.d("error", "Not Found");
+        fragment.displayAlert("Error: Not Found");
         return null;
     }
 
@@ -205,19 +207,24 @@ public class ReportViewModel extends ViewModel {
                 return list.get(i);
             }
         }
-        Log.d("error", "Not Found");
+        fragment.displayAlert("Error: Not Found");
         return null;
     }
 
     public CatalogItem generateByCategory(List<CatalogItem> list, String category, boolean dp){
         int count = 0;
         List<CatalogItem> newList = new ArrayList<>();
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i).getCategory().equals(category)){
+        for(int i=0; i<list.size(); i++) {
+            if (list.get(i).getCategory().equals(category)) {
                 newList.add(list.get(i));
                 count++;
             }
         }
+        if (count == 0) {
+            fragment.displayAlert("Error: Not Found");
+            return null;
+        }
+
         fileName = category + " Report.pdf";
         generatePDF(newList, count, -1, dp);
         return list.get(0);
@@ -232,6 +239,11 @@ public class ReportViewModel extends ViewModel {
                 count++;
             }
         }
+        if (count == 0) {
+            fragment.displayAlert("Error: Not Found");
+            return null;
+        }
+
         fileName = period + " Report.pdf";
         generatePDF(newList, count, -1, dp);
         return list.get(0);
