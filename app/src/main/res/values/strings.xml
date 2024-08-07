@@ -48,11 +48,8 @@
         <item>Generate report by Lot number</item>
         <item>Generate report by Name</item>
         <item>Generate report by Category</item>
-<!--        <item>Generate report by Category with Desciption and Picture only</item>-->
         <item>Generate report by Period</item>
-<!--        <item>Generate report by Period with Description and Picture only</item>-->
         <item>Generate report for all items</item>
-<!--        <item>Generate report for all items with Description and Picture only</item>-->
     </string-array>
 
 </resources>
