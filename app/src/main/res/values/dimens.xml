@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="grid_image_size">100dp</dimen>
+    <dimen name="grid_video_size">120dp</dimen>
+</resources>
