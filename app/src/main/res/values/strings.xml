@@ -41,17 +41,18 @@
     <string name="content_description_delete">Deletes the selected catalog items</string>
 
     <string name="generate_report">Generate Report</string>
-    <string name="generate_report_hint">Enter report parameter here</string>
+    <string name="generate_report_hint">Enter report parameter</string>
+    <string name="generate_report_dp">Generate with Description and Picture Only</string>
 
     <string-array name="report_array">
         <item>Generate report by Lot number</item>
         <item>Generate report by Name</item>
         <item>Generate report by Category</item>
-        <item>Generate report by Category with Desciption and Picture only</item>
+<!--        <item>Generate report by Category with Desciption and Picture only</item>-->
         <item>Generate report by Period</item>
-        <item>Generate report by Period with Description and Picture only</item>
+<!--        <item>Generate report by Period with Description and Picture only</item>-->
         <item>Generate report for all items</item>
-        <item>Generate report for all items with Description and Picture only</item>
+<!--        <item>Generate report for all items with Description and Picture only</item>-->
     </string-array>
 
 </resources>

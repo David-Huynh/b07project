@@ -2,6 +2,8 @@ package com.b07project2024.group1;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +17,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
-public class ReportFragment extends Fragment implements IReport.ReportFragment {
+public class ReportFragment extends Fragment {
     private IReport.ReportViewModel reportViewModel = new ReportViewModel();
-    Button btn;
 
     @Nullable
     @Override
@@ -32,6 +35,7 @@ public class ReportFragment extends Fragment implements IReport.ReportFragment {
 
         Spinner report = view.findViewById(R.id.spinnerReportType);
         EditText parameter = view.findViewById(R.id.editTextParameter);
+        Switch dp = view.findViewById(R.id.switchDP);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.report_array, android.R.layout.simple_spinner_item);
@@ -49,32 +53,38 @@ public class ReportFragment extends Fragment implements IReport.ReportFragment {
         requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        btn = view.findViewById(R.id.reportButton);
+        Button button = view.findViewById(R.id.reportButton);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String reportText = report.getSelectedItem().toString();
                 String paramText = parameter.getText().toString();
+                String toast = "null";
+                boolean DP = dp.isChecked();
 
-                if(reportText.equals("Generate report by Lot number") && !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "lot");}
-                else if(reportText.equals("Generate report by Name")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "name");}
-                else if(reportText.equals("Generate report by Category")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "category");}
-                else if(reportText.equals("Generate report by Category with Desciption and Picture only")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "categoryDP");}
-                else if(reportText.equals("Generate report by Period")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "period");}
-                else if(reportText.equals("Generate report by Period with Description and Picture only")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "periodDP");}
-                else if(reportText.equals("Generate report for all items")){reportViewModel.getWholeCatalog(paramText, "all");}
-                else if(reportText.equals("Generate report for all items with Description and Picture only")){reportViewModel.getWholeCatalog(paramText, "allDP");}
+                if(reportText.equals("Generate report by Lot number") && !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "lot", DP);}
+                else if(reportText.equals("Generate report by Name")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "name", DP);}
+                else if(reportText.equals("Generate report by Category")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "category", DP);}
+                else if(reportText.equals("Generate report by Period")&& !paramText.isEmpty()){reportViewModel.getWholeCatalog(paramText, "period", DP);}
+                else if(reportText.equals("Generate report for all items")){reportViewModel.getWholeCatalog(paramText, "all", DP);}
                 else{Toast.makeText(getActivity(), "Please fill out the parameter field", Toast.LENGTH_SHORT).show();}
 
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String msg = reportViewModel.getStatus();
+                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                }, 100);
+
                 parameter.setText("");
+                dp.setChecked(false);
             }
         });
         return view;
     }
 
-    public void displayAlert(String alert) {
-        Toast.makeText(getActivity(), alert, Toast.LENGTH_SHORT).show();
-    }
 }
 
