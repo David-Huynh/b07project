@@ -139,7 +139,7 @@ public class CatalogFragment extends Fragment implements CatalogFragmentCallback
         catalogItemViewModel.setItem(item);
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, new ViewItem())
+                .replace(R.id.fragment_container, new ViewItemFragment())
                 .addToBackStack(null) // maybe 'item'
                 .commit();
     }
