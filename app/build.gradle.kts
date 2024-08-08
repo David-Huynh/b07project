@@ -84,9 +84,9 @@ dependencies {
     // For local unit tests
     testImplementation(libs.dagger.hilt.android.testing)
     testAnnotationProcessor(libs.com.google.dagger.hilt.compiler2)
-    
+
+    implementation(libs.glide)
     implementation("com.google.code.gson:gson:2.8.9")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
 

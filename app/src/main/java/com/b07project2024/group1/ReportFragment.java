@@ -44,7 +44,7 @@ public class ReportFragment extends Fragment {
         ActivityResultLauncher<String> requestPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                     if (isGranted) {
-                        Toast.makeText(getActivity(), "Permission Acccepted.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Permission Accepted.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(), "Permission Denied.", Toast.LENGTH_SHORT).show();
                     }
