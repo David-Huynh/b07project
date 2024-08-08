@@ -141,4 +141,5 @@ public class CatalogItem {
             return this.getPeriod().equals(item.getPeriod());
         return true;
     }
+    
 }

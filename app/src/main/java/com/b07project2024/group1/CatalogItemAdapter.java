@@ -23,9 +23,11 @@ import java.util.List;
 public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.ViewHolder> {
     public final List<CatalogItem> catalogList;
     SelectionTracker<String> tracker;
-    public CatalogItemAdapter() {
+    CatalogFragmentCallbackInterface catalogFrag;
+    public CatalogItemAdapter(CatalogFragmentCallbackInterface catalogFrag) {
         setHasStableIds(true);
         catalogList = new ArrayList<>();
+        this.catalogFrag = catalogFrag;
     }
 
     /**
@@ -52,6 +54,7 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewName, textViewLot, textViewCategory, textViewPeriod, textViewDescription;
         private final ImageView imageViewPreview;
+
 
         public ViewHolder(View view) {
             super(view);
@@ -134,6 +137,7 @@ public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogItemAdapter.
         CatalogItem item = catalogList.get(position);
         boolean isSelected = tracker != null && tracker.isSelected(item.getLot());
         holder.bind(item, isSelected);
+        holder.itemView.setOnClickListener(v -> catalogFrag.onClick(item));
     }
 
     @Override
