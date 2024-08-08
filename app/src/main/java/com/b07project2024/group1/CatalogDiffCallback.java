@@ -47,9 +47,9 @@ public class CatalogDiffCallback extends DiffUtil.Callback {
      */
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        if(newItemPosition == 0 & oldItemPosition != 1){
-            return false;
-        }
+//        if(newItemPosition == 0 & oldItemPosition != 1){
+//            return false;
+//        }
         return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
     }
 }
