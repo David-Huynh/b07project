@@ -85,7 +85,6 @@ dependencies {
     testImplementation(libs.dagger.hilt.android.testing)
     testAnnotationProcessor(libs.com.google.dagger.hilt.compiler2)
 
-    implementation(libs.glide)
     implementation("com.google.code.gson:gson:2.8.9")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
