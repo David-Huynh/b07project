@@ -85,12 +85,7 @@ dependencies {
     testImplementation(libs.dagger.hilt.android.testing)
     testAnnotationProcessor(libs.com.google.dagger.hilt.compiler2)
 
-    // Firebase Storage dependency
-    implementation ("com.google.firebase:firebase-storage:20.0.1")
-    implementation ("com.google.firebase:firebase-database:20.0.3")
-
-    implementation ("com.google.code.gson:gson:2.8.9")
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.google.code.gson:gson:2.8.9")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }
 

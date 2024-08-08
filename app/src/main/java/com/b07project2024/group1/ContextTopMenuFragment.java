@@ -115,7 +115,7 @@ public class ContextTopMenuFragment extends Fragment {
             transaction.replace(R.id.fragment_container, new AddItemFragment());
             transaction.addToBackStack("Add");
         } else if (item.getItemId() == R.id.report) {
-            transaction.replace(R.id.fragment_container, new CatalogFragment());
+            transaction.replace(R.id.fragment_container, new ReportFragment());
             transaction.addToBackStack("Report");
         } else if (item.getItemId() == R.id.delete) {
             delete = new DeleteItem();

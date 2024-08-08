@@ -74,4 +74,17 @@
     <string name="content_description_report">Navigates to a page to generate a report about catalog items</string>
     <string name="content_description_delete">Deletes the selected catalog items</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_item_warning">Note: Duplicate lot numbers in catalog will be replaced</string>
+
+    <string name="generate_report">Generate Report</string>
+    <string name="generate_report_hint">Enter report parameter</string>
+    <string name="generate_report_dp">Generate with Description and Picture Only</string>
+
+    <string-array name="report_array">
+        <item>Generate report by Lot number</item>
+        <item>Generate report by Name</item>
+        <item>Generate report by Category</item>
+        <item>Generate report by Period</item>
+        <item>Generate report for all items</item>
+    </string-array>
 </resources>

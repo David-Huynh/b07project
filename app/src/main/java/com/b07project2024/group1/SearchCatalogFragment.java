@@ -1,6 +1,7 @@
 package com.b07project2024.group1;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,8 @@ public class SearchCatalogFragment extends Fragment {
                 CatalogItem filter = new CatalogItem();
                 filter.setLot(lotText);
                 filter.setName(nameText);
-                filter.setName(categoryText);
-                filter.setName(periodText);
+                filter.setCategory(categoryText);
+                filter.setPeriod(periodText);
                 catalogViewModel.setFilter(filter);
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
